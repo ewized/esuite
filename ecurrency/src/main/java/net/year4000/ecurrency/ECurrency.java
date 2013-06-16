@@ -66,17 +66,17 @@ public class ECurrency extends BukkitComponent implements Listener {
     public class Commands{
     	 @Command(aliases = {"balance", "bal", "money"}, usage = "[add|remove|set] [amount] [player]",
                  desc = "All balance related command", flags = "", max = 3)
-    	 @CommandPermissions({"ecurrency.balance", "ecurrency.balance.add", "ecurrency.balance.remove", "ecurrency.balance.set"})
+    	 @CommandPermissions({"ecurrency.balance", "ecurrency.balance.add", "ecurrency.balance.remove", "ecurrency.balance.set", "ecurrency.balance.other"})
          public void balance(CommandContext args, CommandSender player) throws CommandException {
     		 ECurrencySession session = null;
 
-    		 if(args.argsLength()==3){
+    		 if(args.argsLength() == 3){
     			 if(Bukkit.getOfflinePlayer(args.getString(2)).hasPlayedBefore()){
     				 session = sessions.getSession(ECurrencySession.class, Bukkit.getOfflinePlayer(args.getString(2)).getPlayer());
     			 } else{
     				 player.sendMessage(ChatColor.YELLOW + "That player has not logon before.");
     			 }
-    		 } else if(args.argsLength()==2){
+    		 } else if(args.argsLength() == 2){
     			 session = sessions.getSession(ECurrencySession.class, player);
 	    		 if(args.getString(0).equalsIgnoreCase("add")){
 	    			CommandBook.inst().checkPermission(player, "ecurrency.balance.add");
@@ -104,6 +104,11 @@ public class ECurrency extends BukkitComponent implements Listener {
 	    			 }
 	    		 }
 	    		 player.sendMessage(ChatColor.YELLOW + session.getOwner().getName() + "'s balance is " + session.getBalance() + " " + config.moneyName.toLowerCase() + ".");
+    		 } else if(args.argsLength() == 1){
+    			 CommandBook.inst().checkPermission(player, "ecurrency.balance.other");
+    			 Player p = Bukkit.getPlayerExact(args.getString(0));
+    			 session = sessions.getSession(ECurrencySession.class, p);
+    			 player.sendMessage(ChatColor.YELLOW + p.getName() + " balance is " + session.getBalance() + " " + config.moneyName.toLowerCase() + ".");
     		 } else{
     			 session = sessions.getSession(ECurrencySession.class, player);
     			 player.sendMessage(ChatColor.YELLOW + "Your balance is " + session.getBalance() + " " + config.moneyName.toLowerCase() + ".");
