@@ -6,9 +6,19 @@
   <name>eProtect</name>
   <description>Protect block that you dont want others to break or interact with.</description>
   
-  <build>
+   <build>
     <defaultGoal>install</defaultGoal>
   	<finalName>${project.name}</finalName>
+  	<plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
   
   <repositories>
