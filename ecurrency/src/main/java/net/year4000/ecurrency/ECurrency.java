@@ -108,7 +108,7 @@ public class ECurrency extends BukkitComponent implements Listener {
     			 CommandBook.inst().checkPermission(player, "ecurrency.balance.other");
     			 Player p = Bukkit.getPlayerExact(args.getString(0));
     			 session = sessions.getSession(ECurrencySession.class, p);
-    			 player.sendMessage(ChatColor.YELLOW + p.getName() + " balance is " + session.getBalance() + " " + config.moneyName.toLowerCase() + ".");
+    			 player.sendMessage(ChatColor.YELLOW + p.getName().substring(0,1).toUpperCase() + p.getName().substring(1) + "'s balance is " + session.getBalance() + " " + config.moneyName.toLowerCase() + ".");
     		 } else{
     			 session = sessions.getSession(ECurrencySession.class, player);
     			 player.sendMessage(ChatColor.YELLOW + "Your balance is " + session.getBalance() + " " + config.moneyName.toLowerCase() + ".");
