@@ -16,7 +16,7 @@ Compiling
 ------
 The components in eSuite uses [Maven]. This will download all of the dependencies used in the projects.
 
-  - The components are built agenst `Java 7`.
+  - The components are built against `Java 7`.
   - To compile the components use `mvn install`.
 
 License
