@@ -2,9 +2,12 @@
 */.classpath
 */.project
 */.settings
+/.metadata
 
 # Maven
 */target
 
 # Other
-/.metadata
+/eSuite.txt
+/README.txt
+/LICENSE.txt
