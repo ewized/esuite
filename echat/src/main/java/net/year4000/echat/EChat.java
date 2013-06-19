@@ -41,11 +41,14 @@ public class EChat extends BukkitComponent implements Listener {
         Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
     }
 
-	
     public void reload() {
         super.reload();
         configure(config);
         Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
+    }
+    
+    public void disabled(){
+    	Logger.getLogger(component).log(Level.INFO, component+" has been disabled.");
     }
 	
     public static class LocalConfiguration extends ConfigurationBase {

@@ -30,7 +30,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class ECurrency extends BukkitComponent implements Listener {
 	
 	private LocalConfiguration config;
-	private String conponent = "[eCurrency]";
+	private String component = "[eCurrency]";
 	@InjectComponent private SessionComponent sessions;
 	
     
@@ -38,14 +38,17 @@ public class ECurrency extends BukkitComponent implements Listener {
     	config = configure(new LocalConfiguration());
         CommandBook.registerEvents(this);
         registerCommands(Commands.class);
-        Logger.getLogger(conponent).log(Level.INFO, conponent+" has been enabled.");
+        Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
     }
 
-	
     public void reload() {
         super.reload();
         configure(config);
-        Logger.getLogger(conponent).log(Level.INFO, conponent+" has been reloaded.");
+        Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
+    }
+    
+    public void disabled(){
+    	Logger.getLogger(component).log(Level.INFO, component+" has been disabled.");
     }
     
     public static class LocalConfiguration extends ConfigurationBase {

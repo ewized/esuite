@@ -28,9 +28,12 @@ public class EInvSee extends BukkitComponent{
     	registerCommands(Commands.class);
         Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
     }
+    
     public void reload() {
+    	super.reload();
     	Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
     }
+    
     public void disabled(){
     	Logger.getLogger(component).log(Level.INFO, component+" has been disabled.");
     }
@@ -55,7 +58,7 @@ public class EInvSee extends BukkitComponent{
 					CommandBook.inst().checkPermission(player, "einvsee.enderchest");
 					p.openInventory(((HumanEntity) otherPlayer).getEnderChest());
 				}
-			} catch(Exception e){
+			} catch(ClassCastException e){
 				player.sendMessage(ChatColor.RED +  "You are not a player.");
 			}
     	}

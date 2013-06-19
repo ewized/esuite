@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 import com.sk89q.commandbook.CommandBook;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
-import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import com.zachsthings.libcomponents.ComponentInformation;
 import com.zachsthings.libcomponents.ComponentManager;
@@ -25,11 +24,20 @@ public class EComponents extends BukkitComponent{
 		registerCommands(Commands.class);
 		Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
 	}
-	
+    
+    public void reload() {
+    	super.reload();
+    	Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
+    }
+    
+    public void disabled(){
+    	Logger.getLogger(component).log(Level.INFO, component+" has been disabled.");
+    }
+    
 	public class Commands{
 		@Command(aliases = {"components", "comp"}, desc = "Gets a list of plugins/components running on this server.")
 		@CommandPermissions({"ecomponents.components"})
-		public void components(CommandContext args, CommandSender player) throws CommandException{
+		public void components(CommandContext args, CommandSender player){
 			//Bukkit Plugins
 			/*
 			PluginManager plugins = Bukkit.getPluginManager();
