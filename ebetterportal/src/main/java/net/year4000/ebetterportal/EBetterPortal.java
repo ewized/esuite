@@ -34,10 +34,6 @@ public class EBetterPortal extends BukkitComponent implements Listener {
         configure(config);
         Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
     }
-    
-    public void disabled(){
-    	Logger.getLogger(component).log(Level.INFO, component+" has been disabled.");
-    }
 	
     public static class LocalConfiguration extends ConfigurationBase {
     	@Setting("classic-portal") public boolean classicPortal = true;
