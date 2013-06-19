@@ -36,7 +36,7 @@ public class EStaffMode extends BukkitComponent implements Listener {
 	
 	private PermissionManager pex = PermissionsEx.getPermissionManager();
 	private LocalConfiguration config;
-	private String conponent = "[eStaffMode]";
+	private String component = "[eStaffMode]";
 	@InjectComponent private SessionComponent sessions;
 	
 	
@@ -44,13 +44,20 @@ public class EStaffMode extends BukkitComponent implements Listener {
 		config = configure(new LocalConfiguration());
 		registerCommands(Commands.class);
 		CommandBook.registerEvents(this);
-		Logger.getLogger(conponent).log(Level.INFO, conponent+" is enabled.");
+		Logger.getLogger(component).log(Level.INFO, component+" is enabled.");
 	}
 	
+    public void reload() {
+        super.reload();
+        configure(config);
+        Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
+    }
+    
     public static class LocalConfiguration extends ConfigurationBase {
     	@Setting("staff-group") public String staffGroup = "StaffMode";
     	@Setting("op-group") public String opGroup = "OPMode";
     	@Setting("set-op") public Boolean setOP = false;
+    	@Setting("auto-opmode") public Boolean autoOPMode = false;
     }
 	
 	public class Commands{
@@ -98,12 +105,16 @@ public class EStaffMode extends BukkitComponent implements Listener {
     	}
     }
     
-    public void setStaffMode(Player player, String group){
+    public void setStaffMode(Player player, String group) throws CommandPermissionsException{
     	try{
     		EStaffModeSession session = sessions.getSession(EStaffModeSession.class, player);
     		if(!session.getStaffMode()){
     			if(group.equalsIgnoreCase(config.opGroup) || config.setOP){
     				player.setOp(true);
+    			}
+    			if(config.autoOPMode){
+    				CommandBook.inst().checkPermission(player, "estaffmode.op");
+    				group = config.opGroup;
     			}
     	    	pex.getUser(player.getName()).addGroup(group);
     	    	pex.resetUser(player.getName());
