@@ -5,7 +5,9 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
 import com.sk89q.commandbook.CommandBook;
@@ -20,11 +22,17 @@ import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 @ComponentInformation(friendlyName = "eInvSee", desc = "Look or edit players enderchest or inventories.")
 public class EInvSee extends BukkitComponent{
 
-	private String conponent = "[eInvSee]";
+	private String component = "[eInvSee]";
     
     public void enable() {
     	registerCommands(Commands.class);
-        Logger.getLogger(conponent).log(Level.INFO, conponent+" has been enabled.");
+        Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
+    }
+    public void reload() {
+    	Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
+    }
+    public void disabled(){
+    	Logger.getLogger(component).log(Level.INFO, component+" has been disabled.");
     }
     
     public class Commands{
@@ -33,19 +41,19 @@ public class EInvSee extends BukkitComponent{
 		@CommandPermissions({"einvsee.inventory", "einvsee.enderchest"})
     	public void command(CommandContext args, CommandSender player) throws CommandPermissionsException, WrappedCommandException{
 			try{
-				Player otherPlayer = Bukkit.getOfflinePlayer(args.getString(0)).getPlayer();
+				OfflinePlayer otherPlayer = Bukkit.getOfflinePlayer(args.getString(0));
 				Player p = Bukkit.getPlayer(player.getName()).getPlayer();
 				if(args.hasFlag('i') || args.argsLength() == 1){
 					if(otherPlayer != p){
 						CommandBook.inst().checkPermission(player, "einvsee.inventory");
-						p.openInventory(otherPlayer.getInventory());
+						p.openInventory(((HumanEntity) otherPlayer).getInventory());
 					} else{
 						player.sendMessage(ChatColor.YELLOW +  "You can't check your own inventory.");
 					}
 				}
 				if(args.hasFlag('e')){
 					CommandBook.inst().checkPermission(player, "einvsee.enderchest");
-					p.openInventory(otherPlayer.getEnderChest());
+					p.openInventory(((HumanEntity) otherPlayer).getEnderChest());
 				}
 			} catch(Exception e){
 				player.sendMessage(ChatColor.RED +  "You are not a player.");
