@@ -34,10 +34,6 @@ public class EInvSee extends BukkitComponent{
     	Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
     }
     
-    public void disabled(){
-    	Logger.getLogger(component).log(Level.INFO, component+" has been disabled.");
-    }
-    
     public class Commands{
 		@Command(aliases = {"open"}, usage = "[player]",
 				desc = "Opens the players inventory or enderchest", flags = "i e", min = 1, max = 2)
@@ -59,7 +55,7 @@ public class EInvSee extends BukkitComponent{
 					p.openInventory(((HumanEntity) otherPlayer).getEnderChest());
 				}
 			} catch(ClassCastException e){
-				player.sendMessage(ChatColor.RED +  "You are not a player.");
+				player.sendMessage(ChatColor.RED +  "Cant access that ");
 			}
     	}
 		

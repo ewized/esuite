@@ -38,10 +38,6 @@ public class EJoinMessage extends BukkitComponent implements Listener {
         Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
     }
     
-    public void disabled(){
-    	Logger.getLogger(component).log(Level.INFO, component+" has been disabled.");
-    }
-    
     public static class LocalConfiguration extends ConfigurationBase {
     	@Setting("first-join") public String firstJoin = "&a%player% has join the game for the first time.";
     	@Setting("normal-join") public String normalJoin = "&a%player% has join the game.";

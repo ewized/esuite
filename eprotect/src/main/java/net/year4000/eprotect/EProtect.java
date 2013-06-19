@@ -27,6 +27,11 @@ public class EProtect extends BukkitComponent{
 		Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
 	}
 	
+    public void reload() {
+        super.reload();
+        Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
+    }
+	
 	@EventHandler(priority = EventPriority.MONITOR)
     public void on(PlayerInteractEvent event) {
     	

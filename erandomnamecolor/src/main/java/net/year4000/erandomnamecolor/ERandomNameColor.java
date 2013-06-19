@@ -22,20 +22,19 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class ERandomNameColor extends BukkitComponent implements Listener {
 	
 	private LocalConfiguration config;
-	private String conponent = "[eRandomNameColor]";
+	private String component = "[eRandomNameColor]";
 	
     
     public void enable() {
     	config = configure(new LocalConfiguration());
         CommandBook.registerEvents(this);
-        Logger.getLogger(conponent).log(Level.INFO, conponent+" has been enabled.");
+        Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
     }
-
     
     public void reload() {
         super.reload();
         configure(config);
-        Logger.getLogger(conponent).log(Level.INFO, conponent+" has been reloaded.");
+        Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
     }
     
     private static class LocalConfiguration extends ConfigurationBase {

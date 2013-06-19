@@ -47,10 +47,6 @@ public class ECurrency extends BukkitComponent implements Listener {
         Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
     }
     
-    public void disabled(){
-    	Logger.getLogger(component).log(Level.INFO, component+" has been disabled.");
-    }
-    
     public static class LocalConfiguration extends ConfigurationBase {
     	@Setting("start-balance") public int startBalance = 50;
     	@Setting("money-name") public String moneyName = "Credits";

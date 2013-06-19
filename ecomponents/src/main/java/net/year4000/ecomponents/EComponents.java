@@ -30,10 +30,6 @@ public class EComponents extends BukkitComponent{
     	Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
     }
     
-    public void disabled(){
-    	Logger.getLogger(component).log(Level.INFO, component+" has been disabled.");
-    }
-    
 	public class Commands{
 		@Command(aliases = {"components", "comp"}, desc = "Gets a list of plugins/components running on this server.")
 		@CommandPermissions({"ecomponents.components"})
