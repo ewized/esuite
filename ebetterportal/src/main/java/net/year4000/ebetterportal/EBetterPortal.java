@@ -11,7 +11,6 @@ import com.zachsthings.libcomponents.config.Setting;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -38,39 +37,37 @@ public class EBetterPortal extends BukkitComponent implements Listener {
     }
 	
     public static class LocalConfiguration extends ConfigurationBase {
-    	@Setting("nether.spawn") public boolean netherSpawn = true;
-    	@Setting("nether.msg") public String netherMsg = "";
-    	@Setting("end.spawn") public boolean endSpawn = true;
-    	@Setting("end.msg") public String endMsg = "";
-    	@Setting("overworld.spawn") public boolean overworldSpawn = true;
-    	@Setting("overworld.msg") public String overworldMsg = "";
+    	@Setting("classic-portal") public boolean classicPortal = true;
+    	@Setting("end-spawn") public boolean endSpawn = true;
+    	@Setting("messages.overworld") public String overworldMsg = "Welcome back young traveler.";
+    	@Setting("messages.nether") public String netherMsg = "Journey beyond the depths of the underworld.";
+    	@Setting("messages.end") public String endMsg = "This is not the end but the beginning.";
     }
     
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPortalTravel(PlayerPortalEvent event){
     	Player p = event.getPlayer();
     	World toWorld = event.getTo().getWorld();
-    	System.out.println(toWorld.getName());
-    	if(toWorld.getEnvironment().equals(Environment.NETHER)){
-    		if(config.netherSpawn){
-        		event.useTravelAgent(false);
-        		event.setTo(toWorld.getSpawnLocation());
-    		}
-    		if(!config.netherMsg.equals("")) p.sendMessage(ChatColor.YELLOW + config.netherMsg);
-    	} else if(toWorld.getEnvironment().equals(Environment.NORMAL)){
-    		if(config.overworldSpawn){
-        		event.useTravelAgent(false);
-        		event.setTo(toWorld.getSpawnLocation());
-    		}
-    		if(!config.overworldMsg.equals("")) p.sendMessage(ChatColor.YELLOW + config.overworldMsg);
-    	} else if(toWorld.getEnvironment().equals(Environment.THE_END)){
-    		if(config.endSpawn){
-        		event.useTravelAgent(false);
-        		event.setTo(toWorld.getSpawnLocation());
-    		}
-    		if(!config.endMsg.equals("")) p.sendMessage(ChatColor.YELLOW + config.endMsg);
-    	} else{
-    		System.out.println("Error dont know what this environment is: " + toWorld.getEnvironment());
+    	Logger.getLogger(component).log(Level.INFO, p + " has travled to " + toWorld.getName());
+    	switch(toWorld.getEnvironment()){
+			case NETHER:
+	    		event.getTo().getChunk().load();
+	    		if(!config.netherMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.netherMsg);
+				break;
+			case NORMAL:
+	    		event.getTo().getChunk().load();
+	    		if(!config.overworldMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.overworldMsg);
+				break;
+			case THE_END:
+	    		event.getTo().getChunk().load();
+	    		if(config.endSpawn){
+	    			event.setTo(toWorld.getSpawnLocation());
+	    		}
+	    		if(!config.endMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.endMsg);
+				break;
+			default:
+				Logger.getLogger(component).log(Level.INFO, "Error dont know what this environment is: " + toWorld.getEnvironment());
+				break;
     	}
     }
 }
