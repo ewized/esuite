@@ -39,6 +39,7 @@ public class EBetterPortal extends BukkitComponent implements Listener {
     public static class LocalConfiguration extends ConfigurationBase {
     	@Setting("classic-portal") public boolean classicPortal = true;
     	@Setting("end-spawn") public boolean endSpawn = true;
+    	@Setting("travel-output") public boolean travelOutput = true;
     	@Setting("messages.overworld") public String overworldMsg = "Welcome back young traveler.";
     	@Setting("messages.nether") public String netherMsg = "Journey beyond the depths of the underworld.";
     	@Setting("messages.end") public String endMsg = "This is not the end but the beginning.";
@@ -48,7 +49,7 @@ public class EBetterPortal extends BukkitComponent implements Listener {
     public void onPortalTravel(PlayerPortalEvent event){
     	Player p = event.getPlayer();
     	World toWorld = event.getTo().getWorld();
-    	Logger.getLogger(component).log(Level.INFO, p + " has travled to " + toWorld.getName());
+    	if(config.travelOutput) Logger.getLogger(component).log(Level.INFO, p.getName() + " has travled to: " + toWorld.getName());
     	switch(toWorld.getEnvironment()){
 			case NETHER:
 	    		event.getTo().getChunk().load();
@@ -61,6 +62,7 @@ public class EBetterPortal extends BukkitComponent implements Listener {
 			case THE_END:
 	    		event.getTo().getChunk().load();
 	    		if(config.endSpawn){
+	    			event.useTravelAgent(false);
 	    			event.setTo(toWorld.getSpawnLocation());
 	    		}
 	    		if(!config.endMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.endMsg);
