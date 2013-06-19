@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.year4000</groupId>
   <artifactId>ebetterportal</artifactId>
-  <version>1</version>
+  <version>2</version>
   <name>eBetterPortal</name>
   <description>Allows end and nether portals send you to spawn point.</description>
   
