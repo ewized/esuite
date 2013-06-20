@@ -17,7 +17,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPortalEvent;
 
-@ComponentInformation(friendlyName = "eBetterPortal", desc = "Allows end and nether portals send you to spawn point.")
+@ComponentInformation(friendlyName = "eBetterPortal", desc = "Portals have more features than the default ones.")
 public class EBetterPortal extends BukkitComponent implements Listener {
 	
 	private LocalConfiguration config;

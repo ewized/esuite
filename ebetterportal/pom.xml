@@ -4,7 +4,6 @@
   <artifactId>ebetterportal</artifactId>
   <version>2</version>
   <name>eBetterPortal</name>
-  <description>Allows end and nether portals send you to spawn point.</description>
   
    <build>
     <defaultGoal>install</defaultGoal>
@@ -60,4 +59,5 @@
   </dependencies>
   
   
+  <description>Portals have more features than the default ones.</description>
 </project>
