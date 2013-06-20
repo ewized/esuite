@@ -11,19 +11,22 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import com.sk89q.commandbook.CommandBook;
 import com.zachsthings.libcomponents.ComponentInformation;
 import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 
 @ComponentInformation(friendlyName = "eProtect", desc = "Protect block that you dont want others to break or interact with.")
-public class EProtect extends BukkitComponent{
+public class EProtect extends BukkitComponent implements Listener{
 
 	private String component = "[eProtect]";
 	
 	
 	public void enable() {
+		CommandBook.registerEvents(this);
 		Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
 	}
 	
@@ -53,33 +56,40 @@ public class EProtect extends BukkitComponent{
         		if(!player.getGameMode().toString().equalsIgnoreCase("Creative")){
         			player.getInventory().remove(clickedItem);
         		}
-
-        		if(event.getBlockFace().toString() == "NORTH"){
-        			signLoc = world.getBlockAt(placeSign.subtract(0, 0, 1));
-        			if(signLoc.isEmpty()){
-        				signLoc.setTypeIdAndData(Material.WALL_SIGN.getId(), (byte) 2, true);
-        				pass = true;
-        			}
-        		} else if (event.getBlockFace().toString() == "SOUTH"){
-        			signLoc = world.getBlockAt(placeSign.add(0, 0, 1));
-        			if(signLoc.isEmpty()){
-        				signLoc.setTypeIdAndData(Material.WALL_SIGN.getId(), (byte) 3, true);
-        				pass = true;
-        			}
-        		} else if (event.getBlockFace().toString() == "WEST"){
-        			signLoc = world.getBlockAt(placeSign.subtract(1, 0, 0));
-        			if(signLoc.isEmpty()){
-        				signLoc.setTypeIdAndData(Material.WALL_SIGN.getId(), (byte) 4, true);
-        				pass = true;
-        			}
-        		} else if (event.getBlockFace().toString() == "EAST"){
-        			signLoc = world.getBlockAt(placeSign.add(1, 0, 0));
-        			if(signLoc.isEmpty()){
-        				signLoc.setTypeIdAndData(Material.WALL_SIGN.getId(), (byte) 5, true);
-        				pass = true;
-        			}
-        		}
         		
+        		switch(event.getBlockFace()){
+					case NORTH:
+	        			signLoc = world.getBlockAt(placeSign.subtract(0, 0, 1));
+	        			if(signLoc.isEmpty()){
+	        				signLoc.setTypeIdAndData(Material.WALL_SIGN.getId(), (byte) 2, true);
+	        				pass = true;
+	        			}
+						break;
+					case SOUTH:
+	        			signLoc = world.getBlockAt(placeSign.add(0, 0, 1));
+	        			if(signLoc.isEmpty()){
+	        				signLoc.setTypeIdAndData(Material.WALL_SIGN.getId(), (byte) 3, true);
+	        				pass = true;
+	        			}
+						break;
+					case EAST:
+	        			signLoc = world.getBlockAt(placeSign.subtract(1, 0, 0));
+	        			if(signLoc.isEmpty()){
+	        				signLoc.setTypeIdAndData(Material.WALL_SIGN.getId(), (byte) 4, true);
+	        				pass = true;
+	        			}
+						break;
+					case WEST:
+	        			signLoc = world.getBlockAt(placeSign.add(1, 0, 0));
+	        			if(signLoc.isEmpty()){
+	        				signLoc.setTypeIdAndData(Material.WALL_SIGN.getId(), (byte) 5, true);
+	        				pass = true;
+	        			}
+						break;
+					default:
+						break;
+        		}
+
         		if(pass){
 	        		Sign sign = (Sign) signLoc.getState();
 	        		sign.setLine(0, "[Protect]");
