@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.sk89q.commandbook.CommandBook;
+import com.sk89q.wepif.PermissionsResolverManager;
 import com.zachsthings.libcomponents.ComponentInformation;
 import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 import com.zachsthings.libcomponents.config.ConfigurationBase;
@@ -20,10 +21,11 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import ru.tehkode.permissions.PermissionManager;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
-@ComponentInformation(friendlyName = "eChat", desc = "Chat formating with features.")
+@ComponentInformation(friendlyName = "eChat", desc = "Chat formatting with features.")
 public class EChat extends BukkitComponent implements Listener {
 	
 	private PermissionManager pex = PermissionsEx.getPermissionManager();
+	private PermissionsResolverManager wepif = PermissionsResolverManager.getInstance();
 	private LocalConfiguration config;
 	private String component = "[eChat]";
 	private String player;
@@ -59,7 +61,7 @@ public class EChat extends BukkitComponent implements Listener {
     	world = event.getPlayer().getWorld().getName();
     	message = event.getMessage();
     	displayName = event.getPlayer().getDisplayName();
-    	group = pex.getUser(event.getPlayer()).getGroupsNames();
+    	group = wepif.getGroups(event.getPlayer());
     	prefix = pex.getUser(event.getPlayer()).getPrefix();
     	suffix = pex.getUser(event.getPlayer()).getSuffix();
     	

@@ -4,7 +4,6 @@
   <artifactId>echat</artifactId>
   <version>1</version>
   <name>eChat</name>
-  <description>Chat formating with features.</description>
   
    <build>
     <defaultGoal>install</defaultGoal>
@@ -59,4 +58,5 @@
     </dependency>
   </dependencies>
   
+  <description>Chat formatting with features.</description>
 </project>
