@@ -79,7 +79,7 @@ public class ECurrency extends BukkitComponent implements Listener {
     			 session = sessions.getSession(ECurrencySession.class, player);
 	    		 if(args.getString(0).equalsIgnoreCase("add")){
 	    			CommandBook.inst().checkPermission(player, "ecurrency.balance.add");
-					int addTo = session.getBalance() + args.getInteger(1);
+					double addTo = session.getBalance() + args.getDouble(1);
 	    			 if(addTo < 0){
 	    				 session.setBalance(0);
 	    			 }else{
@@ -87,7 +87,7 @@ public class ECurrency extends BukkitComponent implements Listener {
 	    			 }
 	    		 } else if(args.getString(0).equalsIgnoreCase("remove")){
 	    			 CommandBook.inst().checkPermission(player, "ecurrency.balance.remove");
-	    			 int removeTo = session.getBalance() - args.getInteger(1);
+	    			 double removeTo = session.getBalance() - args.getDouble(1);
 	    			 if(removeTo < 0){
 	    				 session.setBalance(0);
 	    			 }else{
@@ -95,7 +95,7 @@ public class ECurrency extends BukkitComponent implements Listener {
 	    			 }
 	    		 } else if(args.getString(0).equalsIgnoreCase("set")){
 	    			 CommandBook.inst().checkPermission(player, "ecurrency.balance.set");
-	    			 int setTo = args.getInteger(1);
+	    			 double setTo = args.getDouble(1);
 	    			 if(setTo < 0){
 	    				 session.setBalance(0);
 	    			 }else{
