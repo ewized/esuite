@@ -62,15 +62,18 @@ public class ERespawn extends BukkitComponent implements Listener{
     	if(config.bedDay){
     		Block b = event.getClickedBlock();
     		Action a = event.getAction();
-			
+    		Player p = event.getPlayer();
+
 			if(b != null && b.getType() == Material.BED_BLOCK && a == Action.RIGHT_CLICK_BLOCK){
-	    		Player p = event.getPlayer();
 				Location l = b.getLocation();
 				Location bl = p.getBedSpawnLocation();
 				Location spawn = Bukkit.getWorlds().get(0).getSpawnLocation();
-				if(bl != null && bl.getWorld() == spawn.getWorld())  bl = spawn;
-				if(bl.getWorld() == spawn.getWorld() && bl.getWorld().getTime()<12500){
-	    			p.setBedSpawnLocation(setBedSpawn(bl,l,p), true);
+				
+				if(p.getWorld() == spawn.getWorld()){
+					if(bl == null) bl = spawn;
+					if(p.getWorld().getTime() < 12500){
+		    			p.setBedSpawnLocation(setBedSpawn(bl,l,p), true);
+					}
 				}
 			}
     	}
@@ -104,7 +107,7 @@ public class ERespawn extends BukkitComponent implements Listener{
     	} catch(IllegalArgumentException e){}
 		if(d > 2.5){
 			p.sendMessage(ChatColor.YELLOW + "You will respawn at this location, you may destory the bed.");
-			p.sendMessage(ChatColor.YELLOW + "Enter the bed again to respawn at spawn.");
+			//p.sendMessage(ChatColor.YELLOW + "Enter the bed again to respawn at spawn.");
 			return l;
 		}
 		p.sendMessage(ChatColor.YELLOW + "You will respawn at spawn.");
