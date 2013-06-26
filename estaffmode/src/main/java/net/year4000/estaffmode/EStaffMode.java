@@ -57,7 +57,6 @@ public class EStaffMode extends BukkitComponent implements Listener {
     	@Setting("staff-group") public String staffGroup = "StaffMode";
     	@Setting("op-group") public String opGroup = "OPMode";
     	@Setting("set-op") public Boolean setOP = false;
-    	@Setting("auto-opmode") public Boolean autoOPMode = false;
     }
 	
 	public class Commands{
@@ -111,10 +110,6 @@ public class EStaffMode extends BukkitComponent implements Listener {
     		if(!session.getStaffMode()){
     			if(group.equalsIgnoreCase(config.opGroup) || config.setOP){
     				player.setOp(true);
-    			}
-    			if(config.autoOPMode){
-    				CommandBook.inst().checkPermission(player, "estaffmode.op");
-    				group = config.opGroup;
     			}
     	    	pex.getUser(player.getName()).addGroup(group);
     	    	pex.resetUser(player.getName());
