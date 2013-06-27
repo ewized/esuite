@@ -47,7 +47,7 @@ public class ERespawn extends BukkitComponent implements Listener{
     	@Setting("bed-day") public boolean bedDay = true;
     }
     
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onRespawn(PlayerRespawnEvent event){
     	Player p = event.getPlayer();
     	Location bl = p.getBedSpawnLocation();
@@ -56,9 +56,8 @@ public class ERespawn extends BukkitComponent implements Listener{
     	event.setRespawnLocation(setRespawn(p, bl, l));
     }
     
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void setBed(PlayerInteractEvent event){
-    	if(event.isCancelled()) return;
     	if(config.bedDay){
     		Block b = event.getClickedBlock();
     		Action a = event.getAction();
@@ -79,9 +78,8 @@ public class ERespawn extends BukkitComponent implements Listener{
     	}
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSleep(BlockBreakEvent event){
-    	if(event.isCancelled()) return;
     	if(config.bedDay){
 			Block b = event.getBlock();
 			Player p = event.getPlayer();
