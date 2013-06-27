@@ -44,7 +44,7 @@ public class EBetterPortal extends BukkitComponent implements Listener {
     	@Setting("messages.end") public String endMsg = "This is not the end but the beginning.";
     }
     
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPortalTravel(PlayerPortalEvent event){
     	Player p = event.getPlayer();
     	World toWorld = event.getTo().getWorld();

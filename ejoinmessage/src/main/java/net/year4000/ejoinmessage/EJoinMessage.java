@@ -45,7 +45,7 @@ public class EJoinMessage extends BukkitComponent implements Listener {
     	@Setting("break-time") public Long breakTime = (long) 1209600000;
     }
     
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onJoin(PlayerJoinEvent event){
     	Player player = event.getPlayer();
     	playerName = player.getName();

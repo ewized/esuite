@@ -53,7 +53,7 @@ public class EChat extends BukkitComponent implements Listener {
         @Setting("chat-format") public String chatFormat = "<%player%> %message%";
     }
     
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event){
     	if(event.isCancelled())return;
     	

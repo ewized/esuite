@@ -86,7 +86,7 @@ public class EStaffMode extends BukkitComponent implements Listener {
 		}
 	}
 	
-    @EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onJoin(PlayerJoinEvent event){
     	Player player = event.getPlayer();
     	EStaffModeSession session = sessions.getSession(EStaffModeSession.class, player);
@@ -95,7 +95,7 @@ public class EStaffMode extends BukkitComponent implements Listener {
     	}
     }
     
-    @EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onQuit(PlayerQuitEvent event){
     	Player player = event.getPlayer();
     	EStaffModeSession session = sessions.getSession(EStaffModeSession.class, player);
