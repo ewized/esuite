@@ -33,7 +33,6 @@ public class ECurrency extends BukkitComponent implements Listener {
 	private String component = "[eCurrency]";
 	@InjectComponent private SessionComponent sessions;
 	
-    
     public void enable() {
     	config = configure(new LocalConfiguration());
         CommandBook.registerEvents(this);
