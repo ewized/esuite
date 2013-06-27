@@ -24,7 +24,7 @@ import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 import com.zachsthings.libcomponents.config.ConfigurationBase;
 import com.zachsthings.libcomponents.config.Setting;
 
-@ComponentInformation(friendlyName = "eRespawn", desc = "Bring back clasic death spawning.")
+@ComponentInformation(friendlyName = "eRespawn", desc = "Bring back classic death spawning.")
 public class ERespawn extends BukkitComponent implements Listener{
 	
 	private LocalConfiguration config;
