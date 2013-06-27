@@ -9,7 +9,7 @@ import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 import com.zachsthings.libcomponents.config.ConfigurationBase;
 import com.zachsthings.libcomponents.config.Setting;
 
-@ComponentInformation(friendlyName = "eProtect", desc = "Protect block that you dont want others to break or interact with.")
+@ComponentInformation(friendlyName = "eProtect", desc = "Protect block that you don't want others to break or interact with.")
 public class EProtect extends BukkitComponent{
 
 	private String component = "[eProtect]";

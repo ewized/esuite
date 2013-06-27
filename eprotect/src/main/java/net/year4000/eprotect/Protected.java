@@ -20,6 +20,8 @@ public class Protected {
 		switch(block.getType()){
 			case WALL_SIGN:
 				return checkSign(block, player);
+			case CHEST:
+				return checkChest(block, player);
 			case IRON_DOOR:
 				return false;
 			case WOODEN_DOOR:
@@ -28,7 +30,7 @@ public class Protected {
 				return checkBlock(block, player);
 		}
 	}
-	
+
 	public boolean checkSign(Block block, Player player){
 		Sign sign = (Sign) block.getState();
 		String[] lines = sign.getLines();
@@ -50,16 +52,28 @@ public class Protected {
 		}
 		return false;
 	}
-	
+
 	public boolean checkBlock(Block block, Player player){
 		for(BlockFace blockface : blockFaces){
 			Block face = block.getRelative(blockface);
-			if(face.getType()==Material.WALL_SIGN){
+			if(face.getType() == Material.WALL_SIGN){
 				Sign sign = (Sign) face.getState();
 				Attachable direction = (Attachable) sign.getData();
 				BlockFace blockfacesign = direction.getAttachedFace().getOppositeFace();
 				if(blockface.equals(blockfacesign)){
 					return checkSign(face, player);
+				}
+			}
+		}
+		return false;
+	}
+	
+	public boolean checkChest(Block block, Player player){
+		for(BlockFace blockface : blockFaces){
+			Block face = block.getRelative(blockface);
+			if(face.getType() == Material.CHEST && face.getType() != Material.WALL_SIGN){
+				if(checkBlock(face, player) || checkBlock(block, player)){
+					return true;
 				}
 			}
 		}
