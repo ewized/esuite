@@ -12,6 +12,8 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Attachable;
 
+import com.sk89q.commandbook.CommandBook;
+
 public class Protected {
 	
 	Set<BlockFace> blockFaces = EnumSet.of(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST);
@@ -34,16 +36,21 @@ public class Protected {
 				return false;
 			default:
 				checkBlock(block, player);
-				return result;
 		}
+		return result;
 	}
 	
 	private void checkSign(Block block, Player player){
 		Sign sign = (Sign) block.getState();
 		String[] lines = sign.getLines();
-
+		
 		if(lines[0].equalsIgnoreCase("[Protect]")){
 			if(player != null){
+				boolean override = false;
+				try {
+					CommandBook.inst().checkPermission(player, "eprotect.override");
+					override = true;
+				} catch (Exception e) {}
 				Boolean locked = true;
 				for(String line : lines){
 					if(line.equalsIgnoreCase(player.getName())){
@@ -52,8 +59,13 @@ public class Protected {
 					}
 				}
 				if(locked){
-					player.sendMessage(ChatColor.GOLD+"NOTICE: " + ChatColor.YELLOW + "This block is protected by " + lines[1] + ".");
-					result = true;
+					if(override){
+						result = false;
+						player.sendMessage(ChatColor.RED + "You are bypassing " +	lines[1] + "'s protection.");
+					} else{
+						result = true;
+						player.sendMessage(ChatColor.GOLD + "NOTICE: " + ChatColor.YELLOW + "This block is protected by " +	lines[1] + ".");
+					}
 				}
 			} else{
 				result = true;
@@ -81,7 +93,12 @@ public class Protected {
             if (adjacent.getState() instanceof Chest) {
             	checkBlock(adjacent, player);
             } else if (adjacent.getType().equals(Material.WALL_SIGN)) {
-            	checkSign(adjacent, player);
+				Sign sign = (Sign) adjacent.getState();
+				Attachable direction = (Attachable) sign.getData();
+				BlockFace blockfacesign = direction.getAttachedFace().getOppositeFace();
+				if(blockface.equals(blockfacesign)){
+					checkSign(adjacent, player);
+				}
             }
         }
 	}

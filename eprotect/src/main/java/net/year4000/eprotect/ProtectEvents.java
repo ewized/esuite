@@ -14,6 +14,9 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import com.sk89q.commandbook.CommandBook;
+import com.sk89q.minecraft.util.commands.CommandPermissionsException;
+
 public class ProtectEvents implements Listener{
 	private Protected protect = new Protected();
 
@@ -76,8 +79,16 @@ public class ProtectEvents implements Listener{
 
 		if(block.getType()==Material.WALL_SIGN){
 	        if(event.getLine(0).equalsIgnoreCase("[Protect]")){
-	        	event.setLine(0, "[Protect]");
-	        	event.setLine(1, player.getName());
+	        	try {
+					CommandBook.inst().checkPermission(player, "eprotect.create.other");
+					event.setLine(0, "[Protect]");
+					if(event.getLine(1).equals("")){
+						event.setLine(1, player.getName());
+					}
+				} catch (CommandPermissionsException e) {
+		        	event.setLine(0, "[Protect]");
+		        	event.setLine(1, player.getName());
+				}
 	        }
 		}
     }
