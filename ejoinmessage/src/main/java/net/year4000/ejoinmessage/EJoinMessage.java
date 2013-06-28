@@ -39,8 +39,8 @@ public class EJoinMessage extends BukkitComponent implements Listener {
     }
     
     public static class LocalConfiguration extends ConfigurationBase {
-    	@Setting("first-join") public String firstJoin = "&a%player% has join the game for the first time.";
-    	@Setting("normal-join") public String normalJoin = "&a%player% has join the game.";
+    	@Setting("first-join") public String firstJoin = "&a%player% has joined the game for the first time.";
+    	@Setting("normal-join") public String normalJoin = "&a%player% has joined the game.";
     	@Setting("break-join") public String breakJoin = "&a%player% is back from a break.";
     	@Setting("break-time") public Long breakTime = (long) 1209600000;
     }
