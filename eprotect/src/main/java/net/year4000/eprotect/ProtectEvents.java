@@ -21,7 +21,10 @@ public class ProtectEvents implements Listener{
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
         Player player = event.getPlayer();
-        event.setCancelled(protect.isProtected(block, player));   
+    	if(protect.isProtected(block, player)){
+    		event.setCancelled(true);
+    		protect.result = false;
+    	}
     }
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -30,7 +33,10 @@ public class ProtectEvents implements Listener{
         Player player = event.getPlayer();
         Action action = event.getAction();
         if(action==Action.RIGHT_CLICK_BLOCK){
-        	event.setCancelled(protect.isProtected(block, player));
+        	if(protect.isProtected(block, player)){
+        		event.setCancelled(true);
+        		protect.result = false;
+        	}
         }
     }
 
@@ -39,6 +45,7 @@ public class ProtectEvents implements Listener{
         for(Block block : event.blockList()){
         	if(protect.isProtected(block, null)){
         		event.setCancelled(true);
+        		protect.result = false;
         		break;
         	}
         }
@@ -47,13 +54,19 @@ public class ProtectEvents implements Listener{
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBurn(BlockBurnEvent event) {
         Block block = event.getBlock();
-        event.setCancelled(protect.isProtected(block, null));
+    	if(protect.isProtected(block, null)){
+    		event.setCancelled(true);
+    		protect.result = false;
+    	}
     }
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockFade(BlockFadeEvent event) {
         Block block = event.getBlock();
-        event.setCancelled(protect.isProtected(block, null));
+    	if(protect.isProtected(block, null)){
+    		event.setCancelled(true);
+    		protect.result = false;
+    	}
     }
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

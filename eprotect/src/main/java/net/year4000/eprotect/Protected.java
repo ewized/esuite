@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.material.Attachable;
@@ -15,23 +16,29 @@ public class Protected {
 	
 	Set<BlockFace> blockFaces = EnumSet.of(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST);
     Set<BlockFace> blockUpDown = EnumSet.of(BlockFace.UP, BlockFace.DOWN);
+    boolean result = false;
 	
 	public boolean isProtected(Block block, Player player){
 		switch(block.getType()){
 			case WALL_SIGN:
-				return checkSign(block, player);
+				checkSign(block, player);
+				return result;
 			case CHEST:
-				return checkChest(block, player);
+				checkChest(block, player);
+				return result;
 			case IRON_DOOR:
 				return false;
 			case WOODEN_DOOR:
 				return false;
+			case TRAP_DOOR:
+				return false;
 			default:
-				return checkBlock(block, player);
+				checkBlock(block, player);
+				return result;
 		}
 	}
-
-	public boolean checkSign(Block block, Player player){
+	
+	private void checkSign(Block block, Player player){
 		Sign sign = (Sign) block.getState();
 		String[] lines = sign.getLines();
 
@@ -41,19 +48,20 @@ public class Protected {
 				for(String line : lines){
 					if(line.equalsIgnoreCase(player.getName())){
 						locked = false;
+						break;
 					}
 				}
 				if(locked){
 					player.sendMessage(ChatColor.GOLD+"NOTICE: " + ChatColor.YELLOW + "This block is protected by " + lines[1] + ".");
-					return true;
+					result = true;
 				}
+			} else{
+				result = true;
 			}
-			return true;
 		}
-		return false;
 	}
 
-	public boolean checkBlock(Block block, Player player){
+	private void checkBlock(Block block, Player player){
 		for(BlockFace blockface : blockFaces){
 			Block face = block.getRelative(blockface);
 			if(face.getType() == Material.WALL_SIGN){
@@ -61,23 +69,20 @@ public class Protected {
 				Attachable direction = (Attachable) sign.getData();
 				BlockFace blockfacesign = direction.getAttachedFace().getOppositeFace();
 				if(blockface.equals(blockfacesign)){
-					return checkSign(face, player);
+					checkSign(face, player);
 				}
 			}
 		}
-		return false;
 	}
 	
-	public boolean checkChest(Block block, Player player){
-		for(BlockFace blockface : blockFaces){
-			Block face = block.getRelative(blockface);
-			if(face.getType() == Material.CHEST && face.getType() != Material.WALL_SIGN){
-				if(checkBlock(face, player) || checkBlock(block, player)){
-					return true;
-				}
-			}
-		}
-		return false;
+	private void checkChest(Block block, Player player){
+		for (BlockFace blockface : blockFaces) {
+            Block adjacent = block.getRelative(blockface);
+            if (adjacent.getState() instanceof Chest) {
+            	checkBlock(adjacent, player);
+            } else if (adjacent.getType().equals(Material.WALL_SIGN)) {
+            	checkSign(adjacent, player);
+            }
+        }
 	}
-	
 }
