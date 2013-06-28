@@ -46,29 +46,31 @@ public class EBetterPortal extends BukkitComponent implements Listener {
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPortalTravel(PlayerPortalEvent event){
-    	Player p = event.getPlayer();
-    	World toWorld = event.getTo().getWorld();
-    	if(config.travelOutput) Logger.getLogger(component).log(Level.INFO, p.getName() + " has travled to: " + toWorld.getName());
-    	switch(toWorld.getEnvironment()){
-			case NETHER:
-	    		event.getTo().getChunk().load();
-	    		if(!config.netherMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.netherMsg);
-				break;
-			case NORMAL:
-	    		event.getTo().getChunk().load();
-	    		if(!config.overworldMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.overworldMsg);
-				break;
-			case THE_END:
-	    		event.getTo().getChunk().load();
-	    		if(config.endSpawn){
-	    			event.useTravelAgent(false);
-	    			event.setTo(toWorld.getSpawnLocation());
-	    		}
-	    		if(!config.endMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.endMsg);
-				break;
-			default:
-				Logger.getLogger(component).log(Level.INFO, "Error dont know what this environment is: " + toWorld.getEnvironment());
-				break;
-    	}
+    	try{
+	    	Player p = event.getPlayer();
+	    	World toWorld = event.getTo().getWorld();
+	    	if(config.travelOutput) Logger.getLogger(component).log(Level.INFO, p.getName() + " has travled to: " + toWorld.getName());
+	    	switch(toWorld.getEnvironment()){
+				case NETHER:
+		    		event.getTo().getChunk().load();
+		    		if(!config.netherMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.netherMsg);
+					break;
+				case NORMAL:
+		    		event.getTo().getChunk().load();
+		    		if(!config.overworldMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.overworldMsg);
+					break;
+				case THE_END:
+		    		event.getTo().getChunk().load();
+		    		if(config.endSpawn){
+		    			event.useTravelAgent(false);
+		    			event.setTo(toWorld.getSpawnLocation());
+		    		}
+		    		if(!config.endMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.endMsg);
+					break;
+				default:
+					Logger.getLogger(component).log(Level.INFO, "Error don't know what this environment is: " + toWorld.getEnvironment());
+					break;
+	    	}
+    	} catch(Exception e){}
     }
 }
