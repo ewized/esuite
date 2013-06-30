@@ -1,7 +1,5 @@
 package net.year4000.ejoinmessage;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,12 +61,10 @@ public class EJoinMessage extends BukkitComponent implements Listener {
     
     public String replaceVars(String msgformat){
     	msgformat = msgformat.replace("%player%",playerName);
-    	msgformat = msgformat.replaceAll("&r",ChatColor.RESET.toString());
-    	
-    	ArrayList<String> vars = new ArrayList<String>();
-    	Collections.addAll(vars, "&0", "&1", "&2", "&3", "&4", "&5", "&6", "&7", "&8", "&9", "&a", "&b", "&c", "&d", "&e", "&f", "&k", "&l", "&o", "&n", "&m");
-    	
-    	for(String index : vars)msgformat = msgformat.replaceAll(index,ChatColor.getByChar(index.substring(1)).toString());
+
+    	for(ChatColor c : ChatColor.values()){
+    		msgformat = msgformat.replaceAll("&"+c.getChar(),c.toString()); 
+    	}
 
     	return msgformat;
     }

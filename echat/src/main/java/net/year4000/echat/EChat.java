@@ -1,7 +1,5 @@
 package net.year4000.echat;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,8 +53,6 @@ public class EChat extends BukkitComponent implements Listener {
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event){
-    	if(event.isCancelled())return;
-    	
     	player = event.getPlayer().getName();
     	world = event.getPlayer().getWorld().getName();
     	message = event.getMessage();
@@ -76,12 +72,10 @@ public class EChat extends BukkitComponent implements Listener {
     	msgformat = msgformat.replace("%group%",group[0]);
     	msgformat = msgformat.replace("%prefix%",prefix);
     	msgformat = msgformat.replace("%suffix%",suffix);
-    	msgformat = msgformat.replaceAll("&r",ChatColor.RESET.toString());
-    	
-    	ArrayList<String> vars = new ArrayList<String>();
-    	Collections.addAll(vars, "&0", "&1", "&2", "&3", "&4", "&5", "&6", "&7", "&8", "&9", "&a", "&b", "&c", "&d", "&e", "&f", "&k", "&l", "&o", "&n", "&m");
-    	
-    	for(String index : vars)msgformat = msgformat.replaceAll(index,ChatColor.getByChar(index.substring(1)).toString());
+
+    	for(ChatColor c : ChatColor.values()){
+    		msgformat = msgformat.replaceAll("&"+c.getChar(),c.toString()); 
+    	}
 
     	return msgformat;
     }  
