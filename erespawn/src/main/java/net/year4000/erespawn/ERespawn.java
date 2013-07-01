@@ -17,6 +17,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.sk89q.commandbook.CommandBook;
 import com.zachsthings.libcomponents.ComponentInformation;
@@ -95,6 +97,48 @@ public class ERespawn extends BukkitComponent implements Listener{
 				}
 			}
     	}
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerTeleport(PlayerTeleportEvent event){
+    	Player player = event.getPlayer();
+    	TeleportCause teleportCause = event.getCause();
+    	Location to = event.getTo();
+    	Location from = event.getFrom();
+    	
+    	if(teleportCause == TeleportCause.ENDER_PEARL){
+	    	double d = 2;
+	    	try{
+				 d = from.distance(to);
+	    	} catch(Exception e){}
+    		if(d < 2){
+    			Location bed = player.getBedSpawnLocation();
+    			Location spawn = player.getWorld().getSpawnLocation();
+    			
+        		if(player.isSneaking()){
+        			event.setTo(spawn);
+        			player.sendMessage(ChatColor.YELLOW + "You have been sent to this world's spawn.");
+        		} else{
+        			if(bed.getWorld() != player.getWorld()){
+        				event.setCancelled(true);
+        				player.sendMessage(ChatColor.YELLOW + "You need to be in the same world as your bed.");
+        			} else{
+            			event.setTo(bed);
+            			player.sendMessage(ChatColor.YELLOW + "You have been sent to your bed.");
+        			}
+        			
+        		}
+    		}
+    	}
+    }
+    
+    public Location getLocation(Location l){
+    	World world = l.getWorld();
+    	double x = l.getX();
+    	double y = l.getY();
+    	double z = l.getZ();
+    	System.out.println(world.getName()+x+y+z);
+    	return new Location(world, x, y, z);
     }
     
     public Location setBedSpawn(Location bl, Location l, Player p){
