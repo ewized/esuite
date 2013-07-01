@@ -16,6 +16,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 @ComponentInformation(friendlyName = "eBetterPortal", desc = "Portals have more features than the default ones.")
 public class EBetterPortal extends BukkitComponent implements Listener {
@@ -49,27 +50,31 @@ public class EBetterPortal extends BukkitComponent implements Listener {
     	try{
 	    	Player p = event.getPlayer();
 	    	World toWorld = event.getTo().getWorld();
-	    	if(config.travelOutput) Logger.getLogger(component).log(Level.INFO, p.getName() + " has travled to: " + toWorld.getName());
-	    	switch(toWorld.getEnvironment()){
-				case NETHER:
-		    		event.getTo().getChunk().load();
-		    		if(!config.netherMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.netherMsg);
-					break;
-				case NORMAL:
-		    		event.getTo().getChunk().load();
-		    		if(!config.overworldMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.overworldMsg);
-					break;
-				case THE_END:
-		    		event.getTo().getChunk().load();
-		    		if(config.endSpawn){
-		    			event.useTravelAgent(false);
-		    			event.setTo(toWorld.getSpawnLocation());
-		    		}
-		    		if(!config.endMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.endMsg);
-					break;
-				default:
-					Logger.getLogger(component).log(Level.INFO, "Error don't know what this environment is: " + toWorld.getEnvironment());
-					break;
+	    	TeleportCause teleportCause = event.getCause();
+	    	
+	    	if(teleportCause != TeleportCause.PLUGIN){
+		    	if(config.travelOutput) Logger.getLogger(component).log(Level.INFO, p.getName() + " has travled to: " + toWorld.getName());
+		    	switch(toWorld.getEnvironment()){
+					case NETHER:
+			    		event.getTo().getChunk().load();
+			    		if(!config.netherMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.netherMsg);
+						break;
+					case NORMAL:
+			    		event.getTo().getChunk().load();
+			    		if(!config.overworldMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.overworldMsg);
+						break;
+					case THE_END:
+			    		event.getTo().getChunk().load();
+			    		if(config.endSpawn){
+			    			event.useTravelAgent(false);
+			    			event.setTo(toWorld.getSpawnLocation());
+			    		}
+			    		if(!config.endMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.endMsg);
+						break;
+					default:
+						Logger.getLogger(component).log(Level.INFO, "Error don't know what this environment is: " + toWorld.getEnvironment());
+						break;
+		    	}
 	    	}
     	} catch(Exception e){}
     }
