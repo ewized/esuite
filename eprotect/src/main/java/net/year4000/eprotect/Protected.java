@@ -22,6 +22,7 @@ public class Protected {
     boolean result = false;
 	
 	public boolean isProtected(Block block, Player player){
+		checkChunk(block, player);
 		switch(block.getType()){
 			case WALL_SIGN:
 				checkSign(block, player);
@@ -36,7 +37,6 @@ public class Protected {
 			case TRAP_DOOR:
 				return false;
 			default:
-				checkChunk(block, player);
 				checkBlock(block, player);
 		}
 		return result;
