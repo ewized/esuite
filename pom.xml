@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.year4000</groupId>
   <artifactId>esuite</artifactId>
-  <version>2</version>
+  <version>5</version>
   <name>eSuite</name>
   <description>A collection of mods for Year4000. Theses mods or components expand the functionally of CommandBook. The componets in this suite range from simple components all the way to the complex components.</description>
   <packaging>pom</packaging>
@@ -25,4 +25,28 @@
 	<module>estaffmode</module>
   </modules>
 
+  <build>
+
+	<plugins>
+	   <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <descriptor>assembly.xml</descriptor>
+		  <finalName>${project.name} v${project.version}</finalName>
+          <appendAssemblyId>false</appendAssemblyId>
+        </configuration>
+        <executions>
+          <execution>
+            <id>release</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+	</plugins>
+  </build>
+  
 </project>
