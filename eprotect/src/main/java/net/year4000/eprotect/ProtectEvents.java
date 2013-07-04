@@ -77,7 +77,7 @@ public class ProtectEvents implements Listener{
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
 
-		if(block.getType()==Material.WALL_SIGN){
+		if(block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST){
 	        if(event.getLine(0).equalsIgnoreCase("[Protect]")){
 	        	try {
 					CommandBook.inst().checkPermission(player, "eprotect.create.other");

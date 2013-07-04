@@ -4,6 +4,7 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -35,6 +36,7 @@ public class Protected {
 			case TRAP_DOOR:
 				return false;
 			default:
+				checkChunk(block, player);
 				checkBlock(block, player);
 		}
 		return result;
@@ -101,5 +103,45 @@ public class Protected {
 				}
             }
         }
+	}
+	
+	
+	
+	public void checkChunk(Block block, Player player){
+		Chunk chunk = block.getChunk();
+		int blockX = chunk.getX();
+		int blockZ = chunk.getZ();
+		
+		int minX = blockX*16;
+		int minZ = blockZ*16;
+		int maxX = ((blockX*16)+16);
+		int maxZ = ((blockZ*16)+16);
+		int minY = 0;
+		int maxY = 0;
+		
+		try{
+			for(int b = minX; b < maxX; b++){
+				for(int c = minZ; c < maxZ; c++){
+					int currentY = chunk.getChunkSnapshot().getHighestBlockYAt(b, c);
+					if(currentY > maxY){
+						maxY = currentY;
+					}
+				}
+			}
+		} catch(Exception e){
+			maxY = 256;
+		}
+		
+		for(int a = minY; a < maxY; a++){
+			for(int b = minX; b < maxX; b++){
+				for(int c = minZ; c < maxZ; c++){
+					Block currentBlock = chunk.getBlock(b, a, c);
+					if(currentBlock.getType() == Material.SIGN_POST){
+						checkSign(currentBlock, player);
+						break;
+					}
+				}
+			}
+		}
 	}
 }
