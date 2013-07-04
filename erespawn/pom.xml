@@ -2,10 +2,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.year4000</groupId>
   <artifactId>erespawn</artifactId>
-  <version>1</version>
+  <version>4</version>
   <name>eRespawn</name>
+  <description>Bring back classic death spawning.</description>
   
-     <build>
+  <build>
     <defaultGoal>install</defaultGoal>
   	<finalName>${project.name}</finalName>
   	<plugins>
@@ -17,6 +18,19 @@
           <target>1.7</target>
         </configuration>
       </plugin>
+	  <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-jar-plugin</artifactId>
+	    <inherited>true</inherited>
+	    <configuration>
+	      <archive>                   
+	        <manifest>
+	          <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+	          <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+	        </manifest>
+	      </archive>
+	    </configuration>
+	  </plugin>
     </plugins>
   </build>
   
@@ -52,6 +66,5 @@
       <version>LATEST</version>
     </dependency>
   </dependencies>
-  
-  <description>Bring back clasic death spawning.</description>
+
 </project>

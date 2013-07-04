@@ -2,8 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.year4000</groupId>
   <artifactId>ebetterportal</artifactId>
-  <version>2</version>
+  <version>3</version>
   <name>eBetterPortal</name>
+  <description>Portals have more features than the default ones.</description>
   
    <build>
     <defaultGoal>install</defaultGoal>
@@ -17,6 +18,19 @@
           <target>1.7</target>
         </configuration>
       </plugin>
+	  <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-jar-plugin</artifactId>
+	    <inherited>true</inherited>
+	    <configuration>
+	      <archive>                   
+	        <manifest>
+	          <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+	          <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+	        </manifest>
+	      </archive>
+	    </configuration>
+	  </plugin>
     </plugins>
   </build>
   
@@ -51,13 +65,6 @@
       <artifactId>bukkit</artifactId>
       <version>LATEST</version>
     </dependency>
-    <dependency>
-      <groupId>ru.tehkode</groupId>
-      <artifactId>PermissionsEx</artifactId>
-      <version>1.19.5</version>
-    </dependency>
   </dependencies>
-  
-  
-  <description>Portals have more features than the default ones.</description>
+
 </project>
