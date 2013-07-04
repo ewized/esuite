@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -84,10 +85,8 @@ public class ERespawn extends BukkitComponent implements Listener{
 			if(b != null && b.getType() == Material.BED_BLOCK && a == Action.RIGHT_CLICK_BLOCK){
 				Location l = b.getLocation();
 				Location bl = p.getBedSpawnLocation();
-				Location spawn = Bukkit.getWorlds().get(0).getSpawnLocation();
 				
-				if(p.getWorld() == spawn.getWorld()){
-					if(bl == null) bl = spawn;
+				if(p.getWorld().getEnvironment() == Environment.NORMAL){
 					if(p.getWorld().getTime() < 12500){
 		    			p.setBedSpawnLocation(setBedSpawn(bl,l,p), true);
 					}
@@ -159,13 +158,13 @@ public class ERespawn extends BukkitComponent implements Listener{
     
     public Location setBedSpawn(Location bl, Location l, Player p){
     	Location spawn = Bukkit.getWorlds().get(0).getSpawnLocation();
-    	double d = 3;
-    	try{
+		double d = 3;
+		if(bl == null) bl = spawn;
+		try{
 			if(bl != null) d = bl.distance(l);
-    	} catch(IllegalArgumentException e){}
+		} catch(IllegalArgumentException e){}
 		if(d > 2.5){
 			p.sendMessage(ChatColor.YELLOW + "You will respawn at this location, you may destory the bed.");
-			//p.sendMessage(ChatColor.YELLOW + "Enter the bed again to respawn at spawn.");
 			return l;
 		}
 		p.sendMessage(ChatColor.YELLOW + "You will respawn at spawn.");
