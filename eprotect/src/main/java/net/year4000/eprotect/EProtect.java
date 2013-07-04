@@ -11,11 +11,12 @@ import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 public class EProtect extends BukkitComponent{
 
 	private String component = "[eProtect]";
+	private String version = this.getClass().getPackage().getImplementationVersion();
 	public ProtectEvents protectevents = new ProtectEvents();
 	
 	public void enable() {
 		CommandBook.registerEvents(protectevents);
-		Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
+		Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
 	}
 	
     public void reload() {

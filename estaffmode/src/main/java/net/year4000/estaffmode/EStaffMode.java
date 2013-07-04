@@ -37,6 +37,7 @@ public class EStaffMode extends BukkitComponent implements Listener {
 	private PermissionManager pex = PermissionsEx.getPermissionManager();
 	private LocalConfiguration config;
 	private String component = "[eStaffMode]";
+	private String version = this.getClass().getPackage().getImplementationVersion();
 	@InjectComponent private SessionComponent sessions;
 	
 	
@@ -44,7 +45,7 @@ public class EStaffMode extends BukkitComponent implements Listener {
 		config = configure(new LocalConfiguration());
 		registerCommands(Commands.class);
 		CommandBook.registerEvents(this);
-		Logger.getLogger(component).log(Level.INFO, component+" is enabled.");
+		Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
 	}
 	
     public void reload() {

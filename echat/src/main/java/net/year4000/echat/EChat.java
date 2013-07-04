@@ -29,6 +29,7 @@ public class EChat extends BukkitComponent implements Listener {
 	private ChatThread chatThread;
 	private LocalConfiguration config;
 	private String component = "[eChat]";
+	private String version = this.getClass().getPackage().getImplementationVersion();
 	private String player;
 	private String displayName;
 	private String message;
@@ -42,7 +43,8 @@ public class EChat extends BukkitComponent implements Listener {
     	config = configure(new LocalConfiguration());
     	chatThread = new ChatThread();
         CommandBook.registerEvents(this);
-        Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
+        Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
+        
     }
 
     public void reload() {

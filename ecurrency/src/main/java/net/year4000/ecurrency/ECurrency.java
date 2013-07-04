@@ -31,13 +31,14 @@ public class ECurrency extends BukkitComponent implements Listener {
 	
 	private LocalConfiguration config;
 	private String component = "[eCurrency]";
+	private String version = this.getClass().getPackage().getImplementationVersion();
 	@InjectComponent private SessionComponent sessions;
 	
     public void enable() {
     	config = configure(new LocalConfiguration());
         CommandBook.registerEvents(this);
         registerCommands(Commands.class);
-        Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
+        Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
     }
 
     public void reload() {

@@ -20,11 +20,12 @@ public class EBackup extends BukkitComponent{
 	
 	private LocalConfiguration config;
 	private String component = "[eBackup]";
+	private String version = this.getClass().getPackage().getImplementationVersion();
     
     public void enable() {
     	config = configure(new LocalConfiguration());
     	registerCommands(Commands.class);
-        Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
+    	Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
     }
 
     public void reload() {

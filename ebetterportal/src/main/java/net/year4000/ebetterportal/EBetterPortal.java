@@ -22,12 +22,13 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 public class EBetterPortal extends BukkitComponent implements Listener {
 	
 	private LocalConfiguration config;
-	private String component = "[eBetterPortal]";	
+	private String component = "[eBetterPortal]";
+	private String version = this.getClass().getPackage().getImplementationVersion();
     
     public void enable() {
     	config = configure(new LocalConfiguration());
         CommandBook.registerEvents(this);
-        Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
+        Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
     }
 
     public void reload() {

@@ -21,13 +21,14 @@ public class EJoinMessage extends BukkitComponent implements Listener {
 	
 	private LocalConfiguration config;
 	private String component = "[eJoinMessage]";
+	private String version = this.getClass().getPackage().getImplementationVersion();
 	private String playerName;
 	
     
     public void enable() {
     	config = configure(new LocalConfiguration());
         CommandBook.registerEvents(this);
-        Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
+        Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
     }
 
     public void reload() {

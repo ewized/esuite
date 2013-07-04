@@ -18,11 +18,12 @@ import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 public class EComponents extends BukkitComponent{
 
 	private String component = "[eComponents]";
+	private String version = this.getClass().getPackage().getImplementationVersion();
 	
 	
 	public void enable() {
 		registerCommands(Commands.class);
-		Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
+		Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
 	}
     
     public void reload() {

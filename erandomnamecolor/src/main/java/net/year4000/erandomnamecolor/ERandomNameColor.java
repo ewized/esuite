@@ -23,12 +23,13 @@ public class ERandomNameColor extends BukkitComponent implements Listener {
 	
 	private LocalConfiguration config;
 	private String component = "[eRandomNameColor]";
+	private String version = this.getClass().getPackage().getImplementationVersion();
 	
     
     public void enable() {
     	config = configure(new LocalConfiguration());
         CommandBook.registerEvents(this);
-        Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
+        Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
     }
     
     public void reload() {

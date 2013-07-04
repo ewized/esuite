@@ -23,10 +23,11 @@ import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 public class EInvSee extends BukkitComponent{
 
 	private String component = "[eInvSee]";
+	private String version = this.getClass().getPackage().getImplementationVersion();
     
     public void enable() {
     	registerCommands(Commands.class);
-        Logger.getLogger(component).log(Level.INFO, component+" has been enabled.");
+    	Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
     }
     
     public void reload() {
