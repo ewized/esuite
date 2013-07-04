@@ -9,18 +9,23 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import com.sk89q.commandbook.CommandBook;
+import com.sk89q.minecraft.util.commands.Command;
+import com.sk89q.minecraft.util.commands.CommandContext;
+import com.sk89q.minecraft.util.commands.CommandPermissions;
 import com.zachsthings.libcomponents.ComponentInformation;
 import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 import com.zachsthings.libcomponents.config.ConfigurationBase;
@@ -36,6 +41,7 @@ public class ERespawn extends BukkitComponent implements Listener{
     public void enable() {
     	config = configure(new LocalConfiguration());
     	CommandBook.registerEvents(this);
+    	registerCommands(Commands.class);
     	Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
     }
 
@@ -48,6 +54,15 @@ public class ERespawn extends BukkitComponent implements Listener{
     public static class LocalConfiguration extends ConfigurationBase {
     	@Setting("respawn-default-world") public boolean respawnDefaultWorld = true;
     	@Setting("bed-day") public boolean bedDay = true;
+    }
+    
+    public class Commands{
+    	@Command(aliases = {"home"}, usage = "", desc = "Teleport to your bed location.")
+    	@CommandPermissions({"erespawn.home"})
+        public void home(CommandContext args, CommandSender player){
+    		Player p = (Player) player;
+    		sendToBed(p);
+    	}
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -79,6 +94,12 @@ public class ERespawn extends BukkitComponent implements Listener{
 				}
 			}
     	}
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onWake(PlayerBedLeaveEvent event){
+		Player p = event.getPlayer();
+		p.sendMessage(ChatColor.YELLOW + "You will respawn at this location, you may destory the bed.");
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -113,33 +134,27 @@ public class ERespawn extends BukkitComponent implements Listener{
 				 d = from.distance(to);
 	    	} catch(Exception e){}
     		if(d < 2){
-    			Location bed = player.getBedSpawnLocation();
-    			Location spawn = player.getWorld().getSpawnLocation();
-    			
-        		if(player.isSneaking()){
-        			event.setTo(spawn);
-        			player.sendMessage(ChatColor.YELLOW + "You have been sent to this world's spawn.");
-        		} else{
-        			if(bed.getWorld() != player.getWorld()){
-        				event.setCancelled(true);
-        				player.sendMessage(ChatColor.YELLOW + "You need to be in the same world as your bed.");
-        			} else{
-            			event.setTo(bed);
-            			player.sendMessage(ChatColor.YELLOW + "You have been sent to your bed.");
-        			}
-        			
-        		}
+    			sendToBed(player);
+    			event.setCancelled(true);
     		}
     	}
     }
     
-    public Location getLocation(Location l){
-    	World world = l.getWorld();
-    	double x = l.getX();
-    	double y = l.getY();
-    	double z = l.getZ();
-    	System.out.println(world.getName()+x+y+z);
-    	return new Location(world, x, y, z);
+    public void sendToBed(Player player){
+    	Location bed = player.getBedSpawnLocation();
+		Location spawn = player.getWorld().getSpawnLocation();
+		
+    	if(player.isSneaking()){
+			player.teleport(spawn);
+			player.sendMessage(ChatColor.YELLOW + "You have been sent to this world's spawn.");
+		} else{
+			if(bed.getWorld() != player.getWorld()){
+				player.sendMessage(ChatColor.YELLOW + "You need to be in the same world as your bed.");
+			} else{
+				player.teleport(bed);
+    			player.sendMessage(ChatColor.YELLOW + "You have been sent to your bed.");
+			}
+		}
     }
     
     public Location setBedSpawn(Location bl, Location l, Player p){
