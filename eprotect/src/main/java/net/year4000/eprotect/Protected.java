@@ -3,6 +3,7 @@ package net.year4000.eprotect;
 import java.util.EnumSet;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -129,7 +130,7 @@ public class Protected {
 				}
 			}
 		} catch(Exception e){
-			maxY = 256;
+			maxY = player.getWorld().getMaxHeight();
 		}
 		
 		for(int a = minY; a < maxY; a++){
@@ -143,5 +144,6 @@ public class Protected {
 				}
 			}
 		}
+		
 	}
 }
