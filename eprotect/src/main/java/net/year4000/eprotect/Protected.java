@@ -107,8 +107,6 @@ public class Protected {
         }
 	}
 	
-	
-	
 	public void checkChunk(Block block, Player player){
 		Chunk chunk = block.getChunk();
 		int blockX = chunk.getX();
@@ -149,7 +147,11 @@ public class Protected {
 			}
 			lastChunk = chunk;
 		} else{
-			checkSign(lastSign, player);
+			if(lastSign == null){
+				checkChunk(block,player);
+			} else{
+				checkSign(lastSign, player);
+			}
 		}
 		
 	}
