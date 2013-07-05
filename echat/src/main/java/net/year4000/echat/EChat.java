@@ -59,10 +59,12 @@ public class EChat extends BukkitComponent implements Listener {
     
     public class ChatThread extends Thread{
     	public void sendChat(String msg){
+    		msg = replaceColor(msg);
+    		
     		for(Player p : Bukkit.getOnlinePlayers()){
     			p.sendMessage(msg);
     		}
-    		Bukkit.getConsoleSender().sendMessage(msg);
+    		Bukkit.getConsoleSender().sendMessage(ChatColor.stripColor(msg));
     	}
     	public void chat(AsyncPlayerChatEvent event){
         	player = event.getPlayer().getName();
@@ -72,10 +74,10 @@ public class EChat extends BukkitComponent implements Listener {
         	group = wepif.getGroups(event.getPlayer());
         	prefix = pex.getUser(event.getPlayer()).getPrefix();
         	suffix = pex.getUser(event.getPlayer()).getSuffix();
-
-	    	sendChat(replaceVars(config.chatFormat));
+        	
+	    	sendChat(formatChat(config.chatFormat));
     	}
-    	public String replaceVars(String msgformat){
+    	public String formatChat(String msgformat){
         	msgformat = msgformat.replace("%player%",player);
         	msgformat = msgformat.replace("%displayname%",displayName);
         	msgformat = msgformat.replace("%message%",message);
@@ -84,12 +86,14 @@ public class EChat extends BukkitComponent implements Listener {
         	msgformat = msgformat.replace("%prefix%",prefix);
         	msgformat = msgformat.replace("%suffix%",suffix);
 
-        	for(ChatColor c : ChatColor.values()){
-        		msgformat = msgformat.replaceAll("&"+c.getChar(),c.toString()); 
-        	}
-
         	return msgformat;
         }
+    	public String replaceColor(String msg){
+    		for(ChatColor c : ChatColor.values()){
+    			msg = msg.replaceAll("&"+c.getChar(),c.toString()); 
+        	}
+    		return msg;
+    	}
     }
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
