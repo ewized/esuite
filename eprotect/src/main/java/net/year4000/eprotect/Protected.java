@@ -20,8 +20,6 @@ public class Protected {
 	Set<BlockFace> blockFaces = EnumSet.of(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST);
     Set<BlockFace> blockUpDown = EnumSet.of(BlockFace.UP, BlockFace.DOWN);
     boolean result = false;
-    Block lastSign;
-    Chunk lastChunk;
 	
 	public boolean isProtected(Block block, Player player){
 		checkChunk(block, player);
@@ -108,51 +106,41 @@ public class Protected {
 	}
 	
 	public void checkChunk(Block block, Player player){
+
 		Chunk chunk = block.getChunk();
 		int blockX = chunk.getX();
 		int blockZ = chunk.getZ();
+
+		int minX = blockX*16;
+		int minZ = blockZ*16;
+		int maxX = ((blockX*16)+16);
+		int maxZ = ((blockZ*16)+16);
+		int minY = 0;
+		int maxY = 0;
 		
-		if(lastChunk != chunk || lastChunk == null || lastSign == null){
-			int minX = blockX*16;
-			int minZ = blockZ*16;
-			int maxX = ((blockX*16)+16);
-			int maxZ = ((blockZ*16)+16);
-			int minY = 0;
-			int maxY = 0;
-			
-			try{
-				for(int b = minX; b < maxX; b++){
-					for(int c = minZ; c < maxZ; c++){
-						int currentY = chunk.getChunkSnapshot().getHighestBlockYAt(b, c);
-						if(currentY > maxY){
-							maxY = currentY;
-						}
-					}
-				}
-			} catch(Exception e){
-				maxY = player.getWorld().getMaxHeight();
-			}
-			
-			for(int a = minY; a < maxY; a++){
-				for(int b = minX; b < maxX; b++){
-					for(int c = minZ; c < maxZ; c++){
-						Block currentBlock = chunk.getBlock(b, a, c);
-						if(currentBlock.getType() == Material.SIGN_POST){
-							checkSign(currentBlock, player);
-							lastSign = currentBlock;
-							break;
-						}
+		try{
+			for(int b = minX; b < maxX; b++){
+				for(int c = minZ; c < maxZ; c++){
+					int currentY = chunk.getChunkSnapshot().getHighestBlockYAt(b, c);
+					if(currentY > maxY){
+						maxY = currentY;
 					}
 				}
 			}
-			lastChunk = chunk;
-		} else{
-			if(lastSign == null){
-				checkChunk(block,player);
-			} else{
-				checkSign(lastSign, player);
-			}
+		} catch(Exception e){
+			maxY = block.getWorld().getMaxHeight();
 		}
 		
+		for(int a = minY; a < maxY; a++){
+			for(int b = minX; b < maxX; b++){
+				for(int c = minZ; c < maxZ; c++){
+					Block currentBlock = chunk.getBlock(b, a, c);
+					if(currentBlock.getType() == Material.SIGN_POST){
+						checkSign(currentBlock, player);
+						break;
+					}
+				}
+			}
+		}
 	}
 }
