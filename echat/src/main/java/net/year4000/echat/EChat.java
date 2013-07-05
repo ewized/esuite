@@ -12,6 +12,7 @@ import com.zachsthings.libcomponents.config.Setting;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -62,6 +63,12 @@ public class EChat extends BukkitComponent implements Listener {
     		msg = replaceColor(msg);
     		
     		for(Player p : Bukkit.getOnlinePlayers()){
+    			String pname = p.getName();
+    			String nameMin = pname.substring(0, 3);
+    			if(message.contains(nameMin) && !pname.equals(player)){
+    				p.getWorld().playSound(p.getLocation(), Sound.NOTE_PLING, 1, 0);
+    				msg = ChatColor.RED +""+ ChatColor.ITALIC + ChatColor.stripColor(msg);
+    			}
     			p.sendMessage(msg);
     		}
     		Bukkit.getConsoleSender().sendMessage(ChatColor.stripColor(msg));
