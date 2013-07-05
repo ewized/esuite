@@ -9,7 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -56,15 +55,6 @@ public class ProtectEvents implements Listener{
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBurn(BlockBurnEvent event) {
-        Block block = event.getBlock();
-    	if(protect.isProtected(block, null)){
-    		event.setCancelled(true);
-    		protect.result = false;
-    	}
-    }
-
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onBlockFade(BlockFadeEvent event) {
         Block block = event.getBlock();
     	if(protect.isProtected(block, null)){
     		event.setCancelled(true);
