@@ -53,8 +53,8 @@ public class ERandomNameColor extends BukkitComponent implements Listener {
     	Random rnd = new Random();
     	int index = rnd.nextInt(vars.size());
     	String color = vars.get(index);
-    	name = ChatColor.getByChar(color).toString() + name;
-    	if(config.randomColorName)event.getPlayer().setDisplayName(name);
-    	if(config.tabName)event.getPlayer().setPlayerListName(name);
+    	String namec = ChatColor.getByChar(color).toString() + name;
+    	if(config.randomColorName)event.getPlayer().setDisplayName(namec);
+    	if(config.tabName && name.length() < 14)event.getPlayer().setPlayerListName(namec);
     }
 }
