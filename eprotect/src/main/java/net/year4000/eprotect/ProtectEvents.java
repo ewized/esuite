@@ -1,5 +1,6 @@
 package net.year4000.eprotect;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -39,6 +40,16 @@ public class ProtectEvents implements Listener{
         		event.setCancelled(true);
         		protect.result = false;
         	}
+        }
+    }
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void checkProtection(PlayerInteractEvent event) {
+        Block block = event.getClickedBlock();
+        Player player = event.getPlayer();
+        Action action = event.getAction();
+        if(action==Action.RIGHT_CLICK_BLOCK && player.isSneaking()){
+        	player.sendMessage(ChatColor.GRAY + "This block is protected by: " + protect.getSign(block));
         }
     }
 
