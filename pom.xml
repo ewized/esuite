@@ -14,7 +14,6 @@
   
   <modules>
     <module>ebetterportal</module>
-	<module>echat</module>
 	<module>ecomponents</module>
 	<module>ecurrency</module>
 	<module>einvsee</module>
@@ -22,7 +21,6 @@
 	<module>eprotect</module>
 	<module>erandomnamecolor</module>
 	<module>erespawn</module>
-	<module>estaffmode</module>
   </modules>
 
   <build>
