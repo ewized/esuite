@@ -20,7 +20,7 @@ public class Protected {
 	Set<BlockFace> blockFaces = EnumSet.of(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST);
     Set<BlockFace> blockUpDown = EnumSet.of(BlockFace.UP, BlockFace.DOWN);
     boolean result = false;
-    String defaultmessage = "no one";
+    String message = "no one";
 	
 	public boolean isProtected(Block block, Player player){
 		checkChunk(block, player);
@@ -45,30 +45,13 @@ public class Protected {
 	
 	public String getSign(Block block){
 		Player player = null;
-		
-		switch(block.getType()){
-			case WALL_SIGN:
-				return checkSign(block, player);
-			case CHEST:
-				return checkChest(block, player);
-			case IRON_DOOR:
-				return "";
-			case WOODEN_DOOR:
-				return "";
-			case TRAP_DOOR:
-				return "";
-			default:
-				if(checkBlock(block,player) != defaultmessage){
-				
-				}
-				return checkChunk(block, player);
-		}
+		isProtected(block, player);
+		return message;
 	}
 	
-	private String checkSign(Block block, Player player){
+	private void checkSign(Block block, Player player){
 		Sign sign = (Sign) block.getState();
 		String[] lines = sign.getLines();
-		String message = defaultmessage;
 		
 		if(lines[0].equalsIgnoreCase("[Protect]")){
 			if(player != null){
@@ -98,11 +81,9 @@ public class Protected {
 			}
 			message = lines[1]+" (x:"+sign.getX()+" y:"+sign.getY()+" z:"+sign.getZ()+")";
 		}
-		return message;
 	}
 
-	private String checkBlock(Block block, Player player){
-		String message = defaultmessage;
+	private void checkBlock(Block block, Player player){
 		for(BlockFace blockface : blockFaces){
 			Block face = block.getRelative(blockface);
 			if(face.getType() == Material.WALL_SIGN){
@@ -110,35 +91,31 @@ public class Protected {
 				Attachable direction = (Attachable) sign.getData();
 				BlockFace blockfacesign = direction.getAttachedFace().getOppositeFace();
 				if(blockface.equals(blockfacesign)){
-					message = checkSign(face, player);
+					checkSign(face, player);
 				}
 			}
 		}
-		return message;
 	}
 	
-	private String checkChest(Block block, Player player){
-		String message = defaultmessage;
+	private void checkChest(Block block, Player player){
 		for (BlockFace blockface : blockFaces) {
             Block adjacent = block.getRelative(blockface);
             if (adjacent.getState() instanceof Chest) {
-            	message = checkBlock(adjacent, player);
+            	checkBlock(adjacent, player);
             } else if (adjacent.getType().equals(Material.WALL_SIGN)) {
 				Sign sign = (Sign) adjacent.getState();
 				Attachable direction = (Attachable) sign.getData();
 				BlockFace blockfacesign = direction.getAttachedFace().getOppositeFace();
 				if(blockface.equals(blockfacesign)){
-					message = checkSign(adjacent, player);
+					checkSign(adjacent, player);
 				}
             }
         }
-		return message;
 	}
 	
-	public String checkChunk(Block block, Player player){
+	public void checkChunk(Block block, Player player){
 
 		Chunk chunk = block.getChunk();
-		String message = defaultmessage;
 		int blockX = chunk.getX();
 		int blockZ = chunk.getZ();
 
@@ -167,11 +144,10 @@ public class Protected {
 				for(int c = minZ; c < maxZ; c++){
 					Block currentBlock = chunk.getBlock(b, a, c);
 					if(currentBlock.getType() == Material.SIGN_POST){
-						message = checkSign(currentBlock, player);
+						checkSign(currentBlock, player);
 					}
 				}
 			}
 		}
-		return message;
 	}
 }

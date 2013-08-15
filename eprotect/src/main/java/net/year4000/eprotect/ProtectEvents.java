@@ -36,20 +36,16 @@ public class ProtectEvents implements Listener{
         Player player = event.getPlayer();
         Action action = event.getAction();
         if(action==Action.RIGHT_CLICK_BLOCK){
-        	if(protect.isProtected(block, player)){
+        	if(player.isSneaking()){
+            	player.sendMessage(ChatColor.GRAY + "This block is protected by: " + protect.getSign(block));
+            	protect.message = "no one";
+            } else if(protect.isProtected(block, null)){
+        		event.setCancelled(true);
+        		protect.result = false;
+        	} else if(protect.isProtected(block, player)){
         		event.setCancelled(true);
         		protect.result = false;
         	}
-        }
-    }
-	
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void checkProtection(PlayerInteractEvent event) {
-        Block block = event.getClickedBlock();
-        Player player = event.getPlayer();
-        Action action = event.getAction();
-        if(action==Action.RIGHT_CLICK_BLOCK && player.isSneaking()){
-        	player.sendMessage(ChatColor.GRAY + "This block is protected by: " + protect.getSign(block));
         }
     }
 
