@@ -43,10 +43,6 @@
 	    <id>sk89q-repo</id>
 	    <url>http://maven.sk89q.com/repo/</url>
 	</repository>
-		<repository>
-	    <id>ewized-repo</id>
-	    <url>http://repo.ewized.com/repos/</url>
-	</repository>
   </repositories>
   
   <dependencies>
