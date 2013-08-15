@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.year4000</groupId>
   <artifactId>erandomnamecolor</artifactId>
-  <version>3</version>
+  <version>4</version>
   <name>eRandomNameColor</name>
   <description>When players login their username will be a random color.</description>
   
