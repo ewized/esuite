@@ -43,10 +43,6 @@
 	    <id>sk89q-repo</id>
 	    <url>http://maven.sk89q.com/repo/</url>
 	</repository>
-		<repository>
-	    <id>ewized-repo</id>
-	    <url>http://repo.ewized.com/repos/</url>
-	</repository>
   </repositories>
 
   <dependencies>
@@ -66,10 +62,7 @@
       <version>LATEST</version>
     </dependency>
     <dependency>
-      <groupId>ru.tehkode</groupId>
-      <artifactId>PermissionsEx</artifactId>
-      <version>1.19.5</version>
+    	<artifactId>PermissionsEX</artifactId>
     </dependency>
   </dependencies>
-
 </project>
