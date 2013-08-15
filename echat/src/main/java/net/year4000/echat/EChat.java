@@ -45,7 +45,6 @@ public class EChat extends BukkitComponent implements Listener {
     	chatThread = new ChatThread();
         CommandBook.registerEvents(this);
         Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
-        
     }
 
     public void reload() {
