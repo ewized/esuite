@@ -44,8 +44,6 @@ public class Protected {
 	}
 	
 	public String getSign(Block block){
-		Player player = null;
-		isProtected(block, player);
 		return message;
 	}
 	
