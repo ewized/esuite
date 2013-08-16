@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.year4000</groupId>
   <artifactId>eprotect</artifactId>
-  <version>5</version>
+  <version>6</version>
   <name>eProtect</name>
   <description>Protect block that you don't want others to break or interact with.</description>
   
