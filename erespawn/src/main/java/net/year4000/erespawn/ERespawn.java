@@ -12,6 +12,7 @@ import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -66,7 +67,7 @@ public class ERespawn extends BukkitComponent implements Listener{
     	}
     }
     
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onRespawn(PlayerRespawnEvent event){
     	Player p = event.getPlayer();
     	Location bl = p.getBedSpawnLocation();
@@ -77,10 +78,10 @@ public class ERespawn extends BukkitComponent implements Listener{
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void setBed(PlayerInteractEvent event){
+		Player p = event.getPlayer();
     	if(config.bedDay){
     		Block b = event.getClickedBlock();
     		Action a = event.getAction();
-    		Player p = event.getPlayer();
 
 			if(b != null && b.getType() == Material.BED_BLOCK && a == Action.RIGHT_CLICK_BLOCK){
 				Location l = b.getLocation();
@@ -92,6 +93,14 @@ public class ERespawn extends BukkitComponent implements Listener{
 					}
 				}
 			}
+    	}
+    }
+    
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void overRideEnderPearl(PlayerInteractEvent event){
+		Player p = event.getPlayer();
+    	if(p.getItemInHand().getType() == Material.ENDER_PEARL){
+			event.setUseItemInHand(Result.ALLOW);
     	}
     }
     
@@ -120,7 +129,7 @@ public class ERespawn extends BukkitComponent implements Listener{
     	}
     }
     
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerTeleport(PlayerTeleportEvent event){
     	Player player = event.getPlayer();
     	TeleportCause teleportCause = event.getCause();
@@ -147,11 +156,15 @@ public class ERespawn extends BukkitComponent implements Listener{
 			player.teleport(spawn);
 			player.sendMessage(ChatColor.YELLOW + "You have been sent to this world's spawn.");
 		} else{
-			if(bed.getWorld() != player.getWorld()){
-				player.sendMessage(ChatColor.YELLOW + "You need to be in the same world as your bed.");
+			if(bed != null){
+				if(bed.getWorld() != player.getWorld()){
+					player.sendMessage(ChatColor.YELLOW + "You need to be in the same world as your bed.");
+				} else{
+					player.teleport(bed);
+	    			player.sendMessage(ChatColor.YELLOW + "You have been sent to your bed.");
+				}
 			} else{
-				player.teleport(bed);
-    			player.sendMessage(ChatColor.YELLOW + "You have been sent to your bed.");
+				player.sendMessage(ChatColor.YELLOW + "You have not slept in a bed yet.");
 			}
 		}
     }
