@@ -10,7 +10,11 @@ import com.zachsthings.libcomponents.config.ConfigurationBase;
 import com.zachsthings.libcomponents.config.Setting;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -45,6 +49,27 @@ public class EBetterPortal extends BukkitComponent implements Listener {
     	@Setting("messages.nether") public String netherMsg = "Journey beyond the depths of the underworld.";
     	@Setting("messages.end") public String endMsg = "This is not the end but the beginning.";
     }
+
+	/*
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onClasicPortal(PlayerPortalEvent event){
+    	if(config.classicPortal){
+    		Player player = event.getPlayer();
+    		Chunk playerChunk = player.getWorld().getChunkAt(event.getFrom());
+    		Location location = event.getFrom();
+    		int blockX = location.getBlockX();
+    		int blockZ = location.getBlockZ();
+    		int blockY = location.getBlockY();
+    		Block portal = playerChunk.getBlock(blockX, blockY, blockZ);
+    		if(portal.getType() != Material.PORTAL){
+    			if(!event.isCancelled()){
+    				event.setCancelled(true);
+    				player.teleport(event.getTo());
+    			}
+    		}
+    	}
+    }
+	*/
     
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPortalTravel(PlayerPortalEvent event){
