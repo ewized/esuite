@@ -31,6 +31,9 @@ public class Protected {
 			case CHEST:
 				checkChest(block, player);
 				return result;
+			case ENDER_CHEST:
+				checkChest(block, player);
+				return result;
 			case IRON_DOOR:
 				return false;
 			case WOODEN_DOOR:
@@ -60,7 +63,7 @@ public class Protected {
 				} catch (Exception e) {}
 				Boolean locked = true;
 				for(String line : lines){
-					if(line.equalsIgnoreCase(player.getName())){
+					if(line.equalsIgnoreCase(player.getName()) || line.equalsIgnoreCase("!Everyone")){
 						locked = false;
 						break;
 					}
