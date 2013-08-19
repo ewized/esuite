@@ -13,6 +13,7 @@
   </organization>
   
   <modules>
+    <module>echat</module>
     <module>ebetterportal</module>
 	<module>ecomponents</module>
 	<module>ecurrency</module>
