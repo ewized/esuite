@@ -19,15 +19,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-import ru.tehkode.permissions.PermissionManager;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
-
 @ComponentInformation(friendlyName = "eChat", desc = "Chat formatting with features.")
 public class EChat extends BukkitComponent implements Listener {
 	
-	private PermissionManager pex = PermissionsEx.getPermissionManager();
 	private PermissionsResolverManager wepif = PermissionsResolverManager.getInstance();
-	private ChatThread chatThread;
 	private LocalConfiguration config;
 	private String component = "[eChat]";
 	private String version = this.getClass().getPackage().getImplementationVersion();
@@ -36,13 +31,10 @@ public class EChat extends BukkitComponent implements Listener {
 	private String message;
 	private String world;
 	private String[] group;
-	private String prefix;
-	private String suffix;
 	
     
     public void enable() {
     	config = configure(new LocalConfiguration());
-    	chatThread = new ChatThread();
         CommandBook.registerEvents(this);
         Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
     }
@@ -54,57 +46,64 @@ public class EChat extends BukkitComponent implements Listener {
     }
 	
     public static class LocalConfiguration extends ConfigurationBase {
-        @Setting("chat-format") public String chatFormat = "<%player%> %message%";
+    	@Setting("chat-format") public String chatFormat = "<%player%> %message%";
+    	@Setting("groups.group.prefix") public String groupPrefix = "groupprefix";
+    	@Setting("groups.group.suffix") public String groupSuffix = "groupprefix";
     }
     
-    public class ChatThread extends Thread{
-    	public void sendChat(String msg){
-    		msg = replaceColor(msg);
-    		
-    		for(Player p : Bukkit.getOnlinePlayers()){
-    			String pname = p.getName();
-    			String nameMin = pname.substring(0, 3);
-    			if(message.contains(nameMin) && !pname.equals(player)){
-    				p.getWorld().playSound(p.getLocation(), Sound.NOTE_PLING, 1, 0);
-    				msg = ChatColor.RED +""+ ChatColor.ITALIC + ChatColor.stripColor(msg);
-    			}
-    			p.sendMessage(msg);
-    		}
-    		Bukkit.getConsoleSender().sendMessage(ChatColor.stripColor(msg));
+    public String getOption(String group, String option){
+    	Object object = this.getRawConfiguration().getProperty("groups." + group + "." + option);
+    	if(object != null){
+    		return object.toString();
     	}
-    	public void chat(AsyncPlayerChatEvent event){
-        	player = event.getPlayer().getName();
-        	world = event.getPlayer().getWorld().getName();
-        	message = event.getMessage();
-        	displayName = event.getPlayer().getDisplayName();
-        	group = wepif.getGroups(event.getPlayer());
-        	prefix = pex.getUser(event.getPlayer()).getPrefix();
-        	suffix = pex.getUser(event.getPlayer()).getSuffix();
-        	
-	    	sendChat(formatChat(config.chatFormat));
-    	}
-    	public String formatChat(String msgformat){
-        	msgformat = msgformat.replace("%player%",player);
-        	msgformat = msgformat.replace("%displayname%",displayName);
-        	msgformat = msgformat.replace("%message%",message);
-        	msgformat = msgformat.replace("%world%",world);
-        	msgformat = msgformat.replace("%group%",group[0]);
-        	msgformat = msgformat.replace("%prefix%",prefix);
-        	msgformat = msgformat.replace("%suffix%",suffix);
+    	return option;
+    }
+    
+	public void sendChat(String msg){
+		for(Player p : Bukkit.getOnlinePlayers()){
+			String pname = p.getName();
+			String nameMin = pname.substring(0, 3);
+			if(message.contains(nameMin) && p.getName().contains(nameMin)){
+				p.getWorld().playSound(p.getLocation(), Sound.NOTE_PLING, 1, 0);
+				msg = ChatColor.RED +""+ ChatColor.ITALIC + ChatColor.stripColor(msg);
+			}
+			p.sendMessage(msg);
+		}
+		Bukkit.getConsoleSender().sendMessage(ChatColor.stripColor(msg));
+	}
 
-        	return msgformat;
-        }
-    	public String replaceColor(String msg){
-    		for(ChatColor c : ChatColor.values()){
-    			msg = msg.replaceAll("&"+c.getChar(),c.toString()); 
-        	}
-    		return msg;
+	public String formatChat(String msgformat, Player players){
+    	msgformat = msgformat.replace("%player%",player);
+    	msgformat = msgformat.replace("%displayname%",displayName);
+    	msgformat = msgformat.replace("%world%",world);
+    	msgformat = msgformat.replace("%group%",group[0]);
+    	msgformat = msgformat.replace("%prefix%", getOption(group[0],"prefix"));
+    	msgformat = msgformat.replace("%suffix%", getOption(group[0],"suffix"));
+    	msgformat = replaceColor(msgformat);
+    	if(CommandBook.inst().hasPermission(players, "echat.colors")){
+    		msgformat = replaceColor(msgformat.replace("%message%",message));
+    	} else{
+        	msgformat = msgformat.replace("%message%",message);
     	}
+    	return msgformat;
     }
-    
+	
+	public String replaceColor(String msg){
+		for(ChatColor c : ChatColor.values()){
+			msg = msg.replaceAll("&"+c.getChar(),c.toString()); 
+    	}
+		return msg;
+	}
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent event){
-    	chatThread.chat(event);
+    	player = event.getPlayer().getName();
+    	world = event.getPlayer().getWorld().getName();
+    	message = event.getMessage();
+    	displayName = event.getPlayer().getDisplayName();
+    	group = wepif.getGroups(event.getPlayer());
+    	
+    	sendChat(formatChat(config.chatFormat,event.getPlayer()));
     	event.setCancelled(true);
     }
 
