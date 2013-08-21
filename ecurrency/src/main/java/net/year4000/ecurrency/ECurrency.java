@@ -88,12 +88,12 @@ public class ECurrency extends BukkitComponent implements Listener {
 		String[] lines = sign.getLines();
 		ECurrencySession session = sessions.getSession(ECurrencySession.class, player);
 		Material exchangeItem = Material.getMaterial(config.exchangeItem);
+		ItemStack exchange = new ItemStack(Material.getMaterial(config.exchangeItem), config.exchangeAmount);
 
 		if(lines[0].equalsIgnoreCase("[" + config.atmName + "]")){
 			if(action == Action.RIGHT_CLICK_BLOCK){
-				if(player.getInventory().contains(config.exchangeItem)){
-					player.getInventory().removeItem(new ItemStack[] {
-	                        new ItemStack(Material.getMaterial(config.exchangeItem), config.exchangeAmount) });
+				if(player.getInventory().contains(exchange)){
+					player.getInventory().removeItem(exchange);
 					player.updateInventory();
 					session.addBalance(session.getBalance(), config.exchangeAmount);
 					return "You have exchanged " + config.exchangeAmount + " "
@@ -104,8 +104,7 @@ public class ECurrency extends BukkitComponent implements Listener {
 
 			} else if(action == Action.LEFT_CLICK_BLOCK){
 				if(player.getInventory().firstEmpty() != -1 && session.getBalance() >= config.exchangeAmount){
-					player.getInventory().addItem(new ItemStack[] {
-	                        new ItemStack(Material.getMaterial(config.exchangeItem), config.exchangeAmount)});
+					player.getInventory().addItem(exchange);
 					session.removeBalance(session.getBalance(), config.exchangeAmount);
 					return "You have exchanged " + config.exchangeAmount  + " "
 					+ config.moneyName + ", you new balance is " 
