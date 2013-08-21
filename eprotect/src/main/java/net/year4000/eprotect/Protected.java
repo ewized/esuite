@@ -37,6 +37,12 @@ public class Protected {
 				return false;
 			case TRAP_DOOR:
 				return false;
+			case STONE_BUTTON:
+				return false;
+			case WOOD_BUTTON:
+				return false;
+			case LEVER:
+				return false;
 			default:
 				checkBlock(block, player);
 		}
@@ -122,20 +128,7 @@ public class Protected {
 		int maxX = ((blockX*16)+16);
 		int maxZ = ((blockZ*16)+16);
 		int minY = 0;
-		int maxY = 0;
-		
-		try{
-			for(int b = minX; b < maxX; b++){
-				for(int c = minZ; c < maxZ; c++){
-					int currentY = chunk.getChunkSnapshot().getHighestBlockYAt(b, c);
-					if(currentY > maxY){
-						maxY = currentY;
-					}
-				}
-			}
-		} catch(Exception e){
-			maxY = block.getWorld().getMaxHeight();
-		}
+		int maxY = block.getWorld().getMaxHeight();
 		
 		for(int a = minY; a < maxY; a++){
 			for(int b = minX; b < maxX; b++){
