@@ -8,20 +8,20 @@ import com.zachsthings.libcomponents.ComponentInformation;
 import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 
 @ComponentInformation(friendlyName = "eProtect", desc = "Protect block that you don't want others to break or interact with.")
-public class EProtect extends BukkitComponent{
+public class EProtect extends BukkitComponent {
 
 	private String component = "[eProtect]";
 	private String version = this.getClass().getPackage().getImplementationVersion();
+	private Logger logger = Logger.getLogger(component);
 	public ProtectEvents protectevents = new ProtectEvents();
-	
+
 	public void enable() {
 		CommandBook.registerEvents(protectevents);
-		Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
+		logger.log(Level.INFO, component + " version " + version + " has been enabled.");
 	}
-	
+
     public void reload() {
         super.reload();
-        Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
+        logger.log(Level.INFO, component + " has been reloaded.");
     }  
-    
 }

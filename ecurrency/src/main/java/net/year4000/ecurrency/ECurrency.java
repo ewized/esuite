@@ -34,23 +34,24 @@ import org.bukkit.inventory.ItemStack;
 @ComponentInformation(friendlyName = "eCurrency", desc = "Players balance to buy and sell on the server.")
 @Depend(components = SessionComponent.class)
 public class ECurrency extends BukkitComponent implements Listener {
-	
-	private LocalConfiguration config;
+
 	private String component = "[eCurrency]";
 	private String version = this.getClass().getPackage().getImplementationVersion();
+	private Logger logger = Logger.getLogger(component);
+	private LocalConfiguration config;
 	@InjectComponent private SessionComponent sessions;
-	
+
     public void enable() {
     	config = configure(new LocalConfiguration());
         CommandBook.registerEvents(this);
         registerCommands(Commands.class);
-        Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
+        logger.log(Level.INFO, component + " version " + version + " has been enabled.");
     }
 
     public void reload() {
         super.reload();
         configure(config);
-        Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
+        logger.log(Level.INFO, component + " has been reloaded.");
     }
     
     public static class LocalConfiguration extends ConfigurationBase {
@@ -61,39 +62,53 @@ public class ECurrency extends BukkitComponent implements Listener {
     	@Setting("atm.exchangeamount") public int exchangeAmount = 1;
     	@Setting("atm.exchangeitem") public int exchangeItem = 388;
     }
-    
+
+    public String getMoneyNamePlural() {
+    	return config.moneyNamePlural;
+    }
+
+    public String getMoneyNameSingular() {
+    	return config.moneyNameSingular;
+    }
+
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onJoin(PlayerJoinEvent event){
+    public void onJoin(PlayerJoinEvent event) {
     	Player player = event.getPlayer();
     	ECurrencySession session = sessions.getSession(ECurrencySession.class, player);
     	
-    	if(session.getBalance() == 0){
+    	if (session.getBalance() == 0) {
     		session.setBalance(config.startBalance);
     	}
     }
-    
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
         Player player = event.getPlayer();
         Action action = event.getAction();
-        if(block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST){
+
+        if (block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST) {
             String message = onSign(block, player, action);
-            if(message != null)player.sendMessage(ChatColor.YELLOW + message);
+
+            if (message != null) {
+            	player.sendMessage(ChatColor.YELLOW + message);
+            }
         }
     }
-    
+
 	@SuppressWarnings("deprecation")
-	public String onSign(Block block, Player player, Action action){
+	public String onSign(Block block, Player player, Action action) {
 		Sign sign = (Sign) block.getState();
 		String[] lines = sign.getLines();
 		ECurrencySession session = sessions.getSession(ECurrencySession.class, player);
 		Material exchangeItem = Material.getMaterial(config.exchangeItem);
 		ItemStack exchange = new ItemStack(Material.getMaterial(config.exchangeItem), config.exchangeAmount);
 
-		if(lines[0].equalsIgnoreCase("[" + config.atmName + "]")){
-			if(action == Action.RIGHT_CLICK_BLOCK){
-				if(player.getInventory().contains(exchange)){
+		if (lines[0].equalsIgnoreCase("[" + config.atmName + "]")) {
+			if (action == Action.RIGHT_CLICK_BLOCK) {
+				int amount = player.getInventory().getItemInHand().getAmount();
+
+				if (player.getInventory().contains(exchange, amount)) {
 					player.getInventory().removeItem(exchange);
 					player.updateInventory();
 					session.addBalance(session.getBalance(), config.exchangeAmount);
@@ -101,57 +116,64 @@ public class ECurrency extends BukkitComponent implements Listener {
 							+ exchangeItem.toString().toLowerCase() + ", you new balance is " 
 							+ session.getBalance();
 				}
-				return "You do not have the item in order to exchange.";
 
-			} else if(action == Action.LEFT_CLICK_BLOCK){
-				if(player.getInventory().firstEmpty() != -1 && session.getBalance() >= config.exchangeAmount){
+				return "You do not have the item in your hand in order to exchange.";
+
+			} else if (action == Action.LEFT_CLICK_BLOCK) {
+				if (player.getInventory().firstEmpty() != -1 && session.getBalance() >= config.exchangeAmount) {
 					player.getInventory().addItem(exchange);
 					session.removeBalance(session.getBalance(), config.exchangeAmount);
-					if(config.exchangeAmount == 1){
+
+					if (config.exchangeAmount == 1) {
 						return "You have exchanged " + config.exchangeAmount  + " "
 								+ config.moneyNameSingular.toLowerCase() + ", you new balance is " 
 								+ session.getBalance();
 					}
+
 					return "You have exchanged " + config.exchangeAmount  + " "
 							+ config.moneyNamePlural.toLowerCase() + ", you new balance is " 
 							+ session.getBalance();
-				} else if(session.getBalance() < config.exchangeAmount){
+				} else if(session.getBalance() < config.exchangeAmount) {
 					return "You do not have the correct amount of items.";
 				}
+
 				return "You do not have a place to put the items.";
 			}
+
 			return "Something happen and you did not exchange anything.";
 		}
+
 		return null;
 	}
 	
     public class Commands{
-    	 @Command(aliases = {"balance", "bal", "money"}, usage = "[add|remove|set] [amount] [player]",
-                 desc = "All balance related command", flags = "", max = 3)
+    	 @Command(aliases = {"balance", "bal", "money"}, usage = "[add|remove|set] [amount] [player]", desc = "All balance related command")
     	 @CommandPermissions({"ecurrency.balance", "ecurrency.balance.add", "ecurrency.balance.remove", "ecurrency.balance.set", "ecurrency.balance.other"})
          public void balance(CommandContext args, CommandSender player) throws CommandException {
     		 ECurrencySession session = null;
 
-    		 if(args.argsLength() == 3){
-    			 try{
+    		 if (args.argsLength() == 3) {
+    			 try {
     				 session = sessions.getSession(ECurrencySession.class, Bukkit.getOfflinePlayer(args.getString(2)).getPlayer());
-    			 }catch(Exception e){
+    			 } catch(Exception e) {
     				 player.sendMessage(ChatColor.YELLOW + "Can not grab that player's balance.");
     			 }
-    		 } else if(args.argsLength() == 2){
+    		 } else if (args.argsLength() == 2) {
     			 session = sessions.getSession(ECurrencySession.class, player);
-	    		 if(args.getString(0).equalsIgnoreCase("add")){
+
+	    		 if (args.getString(0).equalsIgnoreCase("add")) {
 	    			CommandBook.inst().checkPermission(player, "ecurrency.balance.add");
 	    			session.addBalance(session.getBalance(), args.getDouble(1));
-	    		 } else if(args.getString(0).equalsIgnoreCase("remove")){
+	    		 } else if (args.getString(0).equalsIgnoreCase("remove")) {
 	    			 CommandBook.inst().checkPermission(player, "ecurrency.balance.remove");
 	    			 session.removeBalance(session.getBalance(), args.getDouble(1));
-	    		 } else if(args.getString(0).equalsIgnoreCase("set")){
+	    		 } else if (args.getString(0).equalsIgnoreCase("set")) {
 	    			 CommandBook.inst().checkPermission(player, "ecurrency.balance.set");
 	    			 double setTo = args.getDouble(1);
 		 			 session.setBalance(setTo);
 	    		 }
-	    		 if(session.getBalance() == 1.0){
+
+	    		 if (session.getBalance() == 1.0) {
 	    			 player.sendMessage(ChatColor.YELLOW + session.getOwner().getName() 
 	    					 + "'s balance is " + session.getBalance() + " " 
 	    					 + config.moneyNameSingular.toLowerCase() + ".");
@@ -161,25 +183,27 @@ public class ECurrency extends BukkitComponent implements Listener {
 	    					 + config.moneyNamePlural.toLowerCase() + ".");
 	    		 }
 	    		 
-    		 } else if(args.argsLength() == 1){
+    		 } else if (args.argsLength() == 1) {
     			 CommandBook.inst().checkPermission(player, "ecurrency.balance.other");
     			 Player p = Bukkit.getPlayerExact(args.getString(0));
     			 session = sessions.getSession(ECurrencySession.class, p);
-    			 if(session.getBalance() == 1.0){
+
+    			 if (session.getBalance() == 1.0) {
     				 player.sendMessage(ChatColor.YELLOW + p.getName().substring(0,1).toUpperCase() 
     						 + p.getName().substring(1) + "'s balance is " + session.getBalance() 
     						 + " " + config.moneyNameSingular.toLowerCase() + ".");
-    			 }else{
+    			 } else {
     				 player.sendMessage(ChatColor.YELLOW + p.getName().substring(0,1).toUpperCase() 
     						 + p.getName().substring(1) + "'s balance is " + session.getBalance() 
     						 + " " + config.moneyNamePlural.toLowerCase() + ".");
     			 }
-    		 } else{
+    		 } else {
     			 session = sessions.getSession(ECurrencySession.class, player);
-    			 if(session.getBalance() == 1.0){
+
+    			 if (session.getBalance() == 1.0) {
     				 player.sendMessage(ChatColor.YELLOW + "Your balance is " 
     						 + session.getBalance() + " " + config.moneyNameSingular.toLowerCase() + ".");
-    			 }else{
+    			 } else {
     				 player.sendMessage(ChatColor.YELLOW + "Your balance is " 
     						 + session.getBalance() + " " + config.moneyNamePlural.toLowerCase() + ".");
     			 }

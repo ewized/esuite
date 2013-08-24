@@ -19,37 +19,35 @@ import org.bukkit.event.player.PlayerJoinEvent;
 @ComponentInformation(friendlyName = "eJoinMessage", desc = "Login messages that depends on last join.")
 public class EJoinMessage extends BukkitComponent implements Listener {
 	
-	private LocalConfiguration config;
 	private String component = "[eJoinMessage]";
 	private String version = this.getClass().getPackage().getImplementationVersion();
-	private String playerName;
+	private Logger logger = Logger.getLogger(component);
+	private LocalConfiguration config;
 	
-    
     public void enable() {
     	config = configure(new LocalConfiguration());
         CommandBook.registerEvents(this);
-        Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
+        logger.log(Level.INFO, component + " version " + version + " has been enabled.");
     }
 
     public void reload() {
         super.reload();
         configure(config);
-        Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
+        logger.log(Level.INFO, component + " has been reloaded.");
     }
-    
+
     public static class LocalConfiguration extends ConfigurationBase {
     	@Setting("first-join") public String firstJoin = "&a%player% has joined the game for the first time.";
     	@Setting("normal-join") public String normalJoin = "&a%player% has joined the game.";
     	@Setting("break-join") public String breakJoin = "&a%player% is back from a break.";
     	@Setting("break-time") public Long breakTime = (long) 1209600000;
     }
-    
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onJoin(PlayerJoinEvent event){
+    public void onJoin(PlayerJoinEvent event) {
     	Player player = event.getPlayer();
-    	playerName = player.getName();
     	String message = config.normalJoin;
-    	
+
     	if(player.getLastPlayed() == 0){
     		message = config.firstJoin;
     	} else if((player.getLastPlayed()+config.breakTime) < System.currentTimeMillis()){
@@ -57,16 +55,16 @@ public class EJoinMessage extends BukkitComponent implements Listener {
     	} else{
     		message = config.normalJoin;
     	}
-    	event.setJoinMessage(replaceVars(message));
+    	event.setJoinMessage(replaceVars(message, player.getName()));
     }
-    
-    public String replaceVars(String msgformat){
-    	msgformat = msgformat.replace("%player%",playerName);
 
-    	for(ChatColor c : ChatColor.values()){
-    		msgformat = msgformat.replaceAll("&"+c.getChar(),c.toString()); 
+    private String replaceVars(String msgFormat, String playerName) {
+    	msgFormat = msgFormat.replace("%player%", playerName);
+
+    	for (ChatColor c : ChatColor.values()) {
+    		msgFormat = msgFormat.replaceAll("&" + c.getChar(), c.toString()); 
     	}
 
-    	return msgformat;
+    	return msgFormat;
     }
 }

@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.year4000</groupId>
   <artifactId>ecomponents</artifactId>
-  <version>2</version>
+  <version>3</version>
   <name>eComponents</name>
   <description>Shows the components that are running in this server.</description>
   

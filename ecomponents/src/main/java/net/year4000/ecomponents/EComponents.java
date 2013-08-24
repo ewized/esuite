@@ -15,50 +15,34 @@ import com.zachsthings.libcomponents.ComponentManager;
 import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 
 @ComponentInformation(friendlyName = "eComponents", desc = "Shows the components that are running in this server.")
-public class EComponents extends BukkitComponent{
+public class EComponents extends BukkitComponent {
 
 	private String component = "[eComponents]";
 	private String version = this.getClass().getPackage().getImplementationVersion();
-	
-	
+	private Logger logger = Logger.getLogger(component);
+
 	public void enable() {
 		registerCommands(Commands.class);
-		Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
+		logger.log(Level.INFO, component + " version " + version + " has been enabled.");
 	}
-    
+
     public void reload() {
     	super.reload();
-    	Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
+    	logger.log(Level.INFO, component + " has been reloaded.");
     }
-    
-	public class Commands{
+
+	public class Commands {
 		@Command(aliases = {"components", "comp"}, desc = "Gets a list of plugins/components running on this server.")
 		@CommandPermissions({"ecomponents.components"})
-		public void components(CommandContext args, CommandSender player){
-			//Bukkit Plugins
-			/*
-			PluginManager plugins = Bukkit.getPluginManager();
-			String pluginNames = ",plugins";
-			for(Plugin plugin : plugins.getPlugins()){
-				ChatColor componentColor;
-				if(plugin.isEnabled()){
-					componentColor = ChatColor.GREEN;
-				} else{
-					componentColor = ChatColor.RED;
-				}
-				pluginNames = pluginNames + ", " + componentColor + plugin.getName() + ChatColor.RESET;
-			}
-			String pluginPrefix = "Plugins (" + plugins.getPlugins().length + "):";
-			player.sendMessage(pluginNames.replaceFirst(",plugins,", pluginPrefix));
-			*/
+		public void components(CommandContext args, CommandSender player) {
 			//CommandBook Components
 			ComponentManager<BukkitComponent> components = CommandBook.inst().getComponentManager();
 			String componentNames = ",components";
-			for(BukkitComponent component : components.getComponents()){
+			for (BukkitComponent component : components.getComponents()) {
 				ChatColor componentColor;
-				if(component.isEnabled()){
+				if (component.isEnabled()) {
 					componentColor = ChatColor.GREEN;
-				} else{
+				} else {
 					componentColor = ChatColor.RED;
 				}
 				componentNames = componentNames + ", " + componentColor + component.getInformation().friendlyName() + ChatColor.RESET;
@@ -66,30 +50,31 @@ public class EComponents extends BukkitComponent{
 			String componentPrefix = "Components (" + components.getComponents().size() + "):";
 			player.sendMessage(componentNames.replaceFirst(",components,", componentPrefix));
 		}
-		@Command(aliases = {"componentmanager", "compmana"}, usage = "[enable|disable|reload] [component]", desc = "Enable, Disable, Reload Components", min = 2, max = 2)
+
+		@Command(aliases = {"componentmanager", "compmana"}, usage = "[enable|disable|reload] [component]", desc = "Enable, Disable, Reload Components")
 		@CommandPermissions({"ecomponents.manage"})
-		public void componentmanager(CommandContext args, CommandSender player){
-			if(args.argsLength()==2){
+		public void componentmanager(CommandContext args, CommandSender player) {
+			if (args.argsLength()==2) {
 				ComponentManager<BukkitComponent> components = CommandBook.inst().getComponentManager();
-				if(args.getString(0).equalsIgnoreCase("enable")){
-					try{
+				if (args.getString(0).equalsIgnoreCase("enable")) {
+					try {
 						components.getComponent("eChat").enable();
 						player.sendMessage(ChatColor.GREEN + args.getString(1) + " is enabled.");
-					} catch (Exception e){
+					} catch (Exception e) {
 						player.sendMessage(ChatColor.RED + args.getString(1) + " is not a valid component.");
 					}
-				} else if(args.getString(0).equalsIgnoreCase("disable")){
-					try{
+				} else if(args.getString(0).equalsIgnoreCase("disable")) {
+					try {
 						components.getComponent("eChat").disable();
 						player.sendMessage(ChatColor.RED + args.getString(1) + " is disabled.");
-					} catch (Exception e){
+					} catch (Exception e) {
 						player.sendMessage(ChatColor.RED + args.getString(1) + " is not a valid component.");
 					}
-				} else if(args.getString(0).equalsIgnoreCase("reload")){
-					try{
+				} else if(args.getString(0).equalsIgnoreCase("reload")) {
+					try {
 						components.getComponent(args.getString(1)).reload();
 						player.sendMessage(ChatColor.GOLD + args.getString(1) + " is reloaded.");
-					} catch (Exception e){
+					} catch (Exception e) {
 						player.sendMessage(ChatColor.RED + args.getString(1) + " is not a valid component.");
 					}
 				}

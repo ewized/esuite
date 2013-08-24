@@ -16,109 +16,107 @@ import org.bukkit.material.Attachable;
 import com.sk89q.commandbook.CommandBook;
 
 public class Protected {
-	
+
 	Set<BlockFace> blockFaces = EnumSet.of(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST);
     Set<BlockFace> blockUpDown = EnumSet.of(BlockFace.UP, BlockFace.DOWN);
     boolean result = false;
     String message = "no one";
-	
-	public boolean isProtected(Block block, Player player){
+
+	public boolean isProtected(Block block, Player player) {
 		checkChunk(block, player);
-		switch(block.getType()){
+
+		switch (block.getType()) {
 			case WALL_SIGN:
 				checkSign(block, player);
 				return result;
 			case CHEST:
 				checkChest(block, player);
 				return result;
-			case IRON_DOOR:
-				return false;
-			case WOODEN_DOOR:
-				return false;
-			case TRAP_DOOR:
-				return false;
-			case STONE_BUTTON:
-				return false;
-			case WOOD_BUTTON:
-				return false;
-			case LEVER:
-				return false;
 			default:
 				checkBlock(block, player);
 		}
+
 		return result;
 	}
-	
-	public String getSign(Block block){
+
+	public String getSign(Block block) {
 		return message;
 	}
-	
-	private void checkSign(Block block, Player player){
+
+	private void checkSign(Block block, Player player) {
 		Sign sign = (Sign) block.getState();
 		String[] lines = sign.getLines();
-		
-		if(lines[0].equalsIgnoreCase("[Protect]")){
-			if(player != null){
+
+		if (lines[0].equalsIgnoreCase("[Protect]")) {
+			if (player != null) {
 				boolean override = false;
+
 				try {
 					CommandBook.inst().checkPermission(player, "eprotect.override");
 					override = true;
 				} catch (Exception e) {}
+
 				Boolean locked = true;
-				for(String line : lines){
-					if(line.equalsIgnoreCase(player.getName())){
+
+				for (String line : lines) {
+					if (line.equalsIgnoreCase(player.getName())) {
 						locked = false;
 						break;
 					}
 				}
-				if(locked){
-					if(override){
+
+				if (locked) {
+					if (override) {
 						result = false;
 						player.sendMessage(ChatColor.RED + "You are bypassing " +	lines[1] + "'s protection.");
-					} else{
+					} else {
 						result = true;
 						player.sendMessage(ChatColor.GOLD + "NOTICE: " + ChatColor.YELLOW + "This block is protected by " +	lines[1] + ".");
 					}
 				}
-			} else{
+			} else {
 				result = true;
 			}
+
 			message = lines[1]+" (x:"+sign.getX()+" y:"+sign.getY()+" z:"+sign.getZ()+")";
 		}
 	}
 
-	private void checkBlock(Block block, Player player){
-		for(BlockFace blockface : blockFaces){
+	private void checkBlock(Block block, Player player) {
+		for (BlockFace blockface : blockFaces) {
 			Block face = block.getRelative(blockface);
-			if(face.getType() == Material.WALL_SIGN){
+
+			if (face.getType() == Material.WALL_SIGN) {
 				Sign sign = (Sign) face.getState();
 				Attachable direction = (Attachable) sign.getData();
 				BlockFace blockfacesign = direction.getAttachedFace().getOppositeFace();
-				if(blockface.equals(blockfacesign)){
+
+				if (blockface.equals(blockfacesign)) {
 					checkSign(face, player);
 				}
 			}
 		}
 	}
 	
-	private void checkChest(Block block, Player player){
+	private void checkChest(Block block, Player player) {
 		for (BlockFace blockface : blockFaces) {
             Block adjacent = block.getRelative(blockface);
+
             if (adjacent.getState() instanceof Chest) {
             	checkBlock(adjacent, player);
             } else if (adjacent.getType().equals(Material.WALL_SIGN)) {
 				Sign sign = (Sign) adjacent.getState();
 				Attachable direction = (Attachable) sign.getData();
 				BlockFace blockfacesign = direction.getAttachedFace().getOppositeFace();
+
 				if(blockface.equals(blockfacesign)){
 					checkSign(adjacent, player);
 				}
             }
         }
 	}
-	
-	public void checkChunk(Block block, Player player){
 
+	public void checkChunk(Block block, Player player) {
 		Chunk chunk = block.getChunk();
 		int blockX = chunk.getX();
 		int blockZ = chunk.getZ();
@@ -129,12 +127,13 @@ public class Protected {
 		int maxZ = ((blockZ*16)+16);
 		int minY = 0;
 		int maxY = block.getWorld().getMaxHeight();
-		
-		for(int a = minY; a < maxY; a++){
-			for(int b = minX; b < maxX; b++){
-				for(int c = minZ; c < maxZ; c++){
+
+		for (int a = minY; a < maxY; a++) {
+			for (int b = minX; b < maxX; b++) {
+				for (int c = minZ; c < maxZ; c++) {
 					Block currentBlock = chunk.getBlock(b, a, c);
-					if(currentBlock.getType() == Material.SIGN_POST){
+
+					if (currentBlock.getType() == Material.SIGN_POST) {
 						checkSign(currentBlock, player);
 					}
 				}

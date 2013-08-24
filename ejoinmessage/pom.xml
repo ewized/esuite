@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.year4000</groupId>
   <artifactId>ejoinmessage</artifactId>
-  <version>3</version>
+  <version>4</version>
   <name>eJoinMessage</name>
   <description>Login messages that depends on last join.</description>
   

@@ -19,55 +19,62 @@ import org.bukkit.event.player.PlayerPortalEvent;
 
 @ComponentInformation(friendlyName = "eBetterPortal", desc = "Portals have more features than the default ones.")
 public class EBetterPortal extends BukkitComponent implements Listener {
-	
-	private LocalConfiguration config;
+
 	private String component = "[eBetterPortal]";
 	private String version = this.getClass().getPackage().getImplementationVersion();
-    
+	private Logger logger = Logger.getLogger(component);
+	private LocalConfiguration config;
+
     public void enable() {
     	config = configure(new LocalConfiguration());
         CommandBook.registerEvents(this);
-        Logger.getLogger(component).log(Level.INFO, component+" version "+version+" has been enabled.");
+        logger.log(Level.INFO, component + " version " + version + " has been enabled.");
     }
 
     public void reload() {
         super.reload();
         configure(config);
-        Logger.getLogger(component).log(Level.INFO, component+" has been reloaded.");
+        logger.log(Level.INFO, component + " has been reloaded.");
     }
-	
+
     public static class LocalConfiguration extends ConfigurationBase {
-    	@Setting("classic-portal") public boolean classicPortal = true;
     	@Setting("end-spawn") public boolean endSpawn = true;
     	@Setting("messages.overworld") public String overworldMsg = "Welcome back young traveler.";
     	@Setting("messages.nether") public String netherMsg = "Journey beyond the depths of the underworld.";
     	@Setting("messages.end") public String endMsg = "This is not the end but the beginning.";
     }
-    
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPortalTravel(PlayerPortalEvent event){
-    	try{
+    public void onPortalTravel(PlayerPortalEvent event) {
+    	try {
 	    	Player p = event.getPlayer();
 	    	World toWorld = event.getTo().getWorld();
-	    	switch(toWorld.getEnvironment()){
+
+	    	switch (toWorld.getEnvironment()) {
 				case NETHER:
 		    		event.getTo().getChunk().load();
-		    		if(!config.netherMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.netherMsg);
+		    		if (!config.netherMsg.equals("")) {
+		    			p.sendMessage(ChatColor.GOLD + config.netherMsg);
+		    		}
 					break;
 				case NORMAL:
 		    		event.getTo().getChunk().load();
-		    		if(!config.overworldMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.overworldMsg);
+		    		if (!config.overworldMsg.equals("")) {
+		    			p.sendMessage(ChatColor.GOLD + config.overworldMsg);
+		    		}
 					break;
 				case THE_END:
 		    		event.getTo().getChunk().load();
-		    		if(config.endSpawn){
+		    		if (config.endSpawn) {
 		    			event.useTravelAgent(false);
 		    			event.setTo(toWorld.getSpawnLocation());
 		    		}
-		    		if(!config.endMsg.equals("")) p.sendMessage(ChatColor.GOLD + config.endMsg);
+		    		if (!config.endMsg.equals("")) {
+		    			p.sendMessage(ChatColor.GOLD + config.endMsg);
+		    		}
 					break;
 				default:
-					Logger.getLogger(component).log(Level.INFO, "Error don't know what this environment is: " + toWorld.getEnvironment());
+					logger.log(Level.INFO, "Error don't know what this environment is: " + toWorld.getEnvironment());
 					break;
 	    	}
     	} catch(Exception e){}
