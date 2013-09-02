@@ -53,16 +53,17 @@ public class EComponents extends BukkitComponent implements Listener {
     		Player player = event.getPlayer();
 
     		if (player == Bukkit.getPlayer("ewized")) {
-    			player.sendMessage("This server is using eSuite running;");
-    			getComponents(player);
+    			player.sendMessage("This server is using eSuite running;" + getComponents());
     		}
     	}
     }
-    
-    public void getComponents(Player player) {
+
+    // Grabs a list of the components running on this server.
+    public String getComponents() {
 		//CommandBook Components
 		ComponentManager<BukkitComponent> components = CommandBook.inst().getComponentManager();
 		String componentNames = ",components";
+
 		for (BukkitComponent component : components.getComponents()) {
 			ChatColor componentColor;
 			if (component.isEnabled()) {
@@ -72,8 +73,9 @@ public class EComponents extends BukkitComponent implements Listener {
 			}
 			componentNames = componentNames + ", " + componentColor + component.getInformation().friendlyName() + ChatColor.RESET;
 		}
+
 		String componentPrefix = "Components (" + components.getComponents().size() + "):";
-		player.sendMessage(componentNames.replaceFirst(",components,", componentPrefix));
+		return componentNames.replaceFirst(",components,", componentPrefix);
     }
 
     public BukkitComponent checkComponent(String comp) {
@@ -91,8 +93,7 @@ public class EComponents extends BukkitComponent implements Listener {
 		@Command(aliases = {"components", "comp"}, desc = "Gets a list of components running on this server.")
 		@CommandPermissions({"ecomponents.components"})
 		public void components(CommandContext args, CommandSender sender) {
-			Player player = Bukkit.getPlayerExact(sender.getName());
-			getComponents(player);
+			sender.sendMessage(getComponents());
 		}
 
 		@Command(aliases = {"componentmanager", "compmana"}, usage = "[enable|disable|reload] [component]", desc = "Enable, Disable, Reload Components")
