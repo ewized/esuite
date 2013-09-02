@@ -8,10 +8,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.sk89q.commandbook.CommandBook;
@@ -21,14 +22,16 @@ public class ProtectEvents implements Listener {
 	private Protected protect = new Protected();
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onBlockBreak(BlockBreakEvent event) {
-        Block block = event.getBlock();
-        Player player = event.getPlayer();
+    public void onHanging(HangingBreakEvent event) {
+        Block block = event.getEntity().getLocation().getBlock();
+        RemoveCause cause = event.getCause();
 
-    	if (protect.isProtected(block, player)) {
-    		event.setCancelled(true);
-    		protect.result = false;
-    	}
+        if (cause == RemoveCause.ENTITY) {
+        	if (protect.isProtected(block, null)) {
+        		event.setCancelled(true);
+        	}
+        }
+
     }
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -37,20 +40,18 @@ public class ProtectEvents implements Listener {
         Player player = event.getPlayer();
         Action action = event.getAction();
 
-        if (action == Action.RIGHT_CLICK_BLOCK) {
-        	if (protect.isProtected(block, player)) {
-        		event.setCancelled(true);
-        	}
+    	if (protect.isProtected(block, player)) {
+    		event.setCancelled(true);
+    	}
 
-        	if (player.isSneaking()) {
-            	player.sendMessage(ChatColor.GRAY + "This block is protected by: " + protect.getSign(block));
-            }
-
-        	protect.result = false;
-        	protect.message = "no one";
+    	if (player.isSneaking() && action == Action.RIGHT_CLICK_BLOCK) {
+        	player.sendMessage(ChatColor.GRAY + "This block is protected by: " + protect.getSign(block));
         }
+
+    	protect.result = false;
+    	protect.message = "no one";
     }
-	
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent event) {
         for (Block block : event.blockList()) {

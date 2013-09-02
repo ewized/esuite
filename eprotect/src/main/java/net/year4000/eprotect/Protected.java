@@ -121,10 +121,10 @@ public class Protected {
 		int blockX = chunk.getX();
 		int blockZ = chunk.getZ();
 
-		int minX = blockX*16;
-		int minZ = blockZ*16;
-		int maxX = ((blockX*16)+16);
-		int maxZ = ((blockZ*16)+16);
+		int minX = blockX * 16;
+		int minZ = blockZ * 16;
+		int maxX = ((blockX * 16) + 16);
+		int maxZ = ((blockZ * 16) + 16);
 		int minY = 0;
 		int maxY = block.getWorld().getMaxHeight();
 
