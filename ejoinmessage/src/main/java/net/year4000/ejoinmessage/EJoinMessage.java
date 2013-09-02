@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 @ComponentInformation(friendlyName = "eJoinMessage", desc = "Login messages that depends on last join.")
 public class EJoinMessage extends BukkitComponent implements Listener {
@@ -39,6 +40,7 @@ public class EJoinMessage extends BukkitComponent implements Listener {
     public static class LocalConfiguration extends ConfigurationBase {
     	@Setting("first-join") public String firstJoin = "&a%player% has joined the game for the first time.";
     	@Setting("normal-join") public String normalJoin = "&a%player% has joined the game.";
+    	@Setting("normal-leave") public String normalLeave = "&a%player% has left the game.";
     	@Setting("break-join") public String breakJoin = "&a%player% is back from a break.";
     	@Setting("break-time") public Long breakTime = (long) 1209600000;
     }
@@ -55,11 +57,18 @@ public class EJoinMessage extends BukkitComponent implements Listener {
     	} else{
     		message = config.normalJoin;
     	}
-    	event.setJoinMessage(replaceVars(message, player.getName()));
+    	event.setJoinMessage(replaceVars(message, player.getName(), player.getWorld().getName()));
     }
 
-    private String replaceVars(String msgFormat, String playerName) {
+    public void onLeave(PlayerQuitEvent event) {
+    	Player player = event.getPlayer();
+    	String message = config.normalLeave;
+    	event.setQuitMessage(replaceVars(message, player.getName(), player.getWorld().getName()));
+    }
+
+    private String replaceVars(String msgFormat, String playerName, String playerWorld) {
     	msgFormat = msgFormat.replace("%player%", playerName);
+    	msgFormat = msgFormat.replace("%world%", playerWorld);
 
     	for (ChatColor c : ChatColor.values()) {
     		msgFormat = msgFormat.replaceAll("&" + c.getChar(), c.toString()); 
