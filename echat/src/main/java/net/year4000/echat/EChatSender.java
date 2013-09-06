@@ -13,7 +13,7 @@ public class EChatSender {
 	public void sendChatMessage() {
 		String playerName = EChat.inst().getEChatMessage().getPlayerName();
 		String playerMessage = EChat.inst().getEChatMessage().getPlayerMessage();
-		String chatFormat = EChat.inst().getEChatConfig().chatFormat;
+		String chatFormat = EChat.inst().getEChatMessage().getPlayerFormat();
 		String formatMessage = formatChat(null, chatFormat);
 		Bukkit.getScheduler().runTaskAsynchronously(CommandBook.inst(), new SendMessage(playerName, playerMessage, formatMessage));
 	}
@@ -74,9 +74,13 @@ public class EChatSender {
 		chatFormat = chatFormat.replace("%group%", EChat.inst().getEChatMessage().getPlayerGroupName(0));
 		
 		// Check if their is a server defined option.
-		//for (String word : chatFormat.split("%")) {
-		//	EChat.inst().getEChatConfig().getOption(EChat.inst().getEChatMessage().getPlayerGroupName(0), word);
-		//}
+		String tempData = "%test%"+chatFormat;
+		for (String word : tempData.split("%")) {
+			String option = EChat.inst().getEChatConfig().getOption(EChat.inst().getEChatMessage().getPlayerGroupName(0), word);
+			if (option != word) {
+				chatFormat = chatFormat.replace("%" + word + "%", option);
+			}
+		}
 		
 		chatFormat = replaceColor(chatFormat);
 
