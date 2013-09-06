@@ -10,7 +10,6 @@ import com.sk89q.wepif.PermissionsResolverManager;
 public class EChatMessage implements Listener {
 	// Grabs the needed classes to make this work.
 	private PermissionsResolverManager wepif = PermissionsResolverManager.getInstance();
-	private EChatSender sendLocalMessage = EChat.inst().getEChatSender();
 
 	// The vars of the plugin.
 	private Player player;
@@ -20,6 +19,7 @@ public class EChatMessage implements Listener {
 	private String playerServer;
 	private String playerMessage;
 	private String[] playerGroups;
+	private String playerFormat;
 	
 	// Listens for each chat message and sets up the vars.
     @EventHandler(ignoreCancelled = true)
@@ -35,9 +35,11 @@ public class EChatMessage implements Listener {
     	
     	//Checks where to send the chat.
     	if (EChat.inst().getEChatConfig().bungeecord) {
+    		playerFormat = EChat.inst().getEChatConfig().serverFormat;
     		EChat.inst().getEChatBungeeCord().sendChatBungeeCord();
     	}
-    	sendLocalMessage.sendChatMessage();
+    	playerFormat = EChat.inst().getEChatConfig().chatFormat;
+    	EChat.inst().getEChatSender().sendChatMessage();
     	
     	// Cancels the message as the plugin will send the messages itself.
     	event.setCancelled(true);
@@ -67,17 +69,22 @@ public class EChatMessage implements Listener {
     public String getPlayerMessage() {
     	return this.playerMessage;
     }
-    
+
     // Gets an array of the player's groups.
     public String[] getPlayerGroups() {
     	return this.playerGroups;
     }
-    
+
     // Gets a single group
     public String getPlayerGroupName(int index) {
     	return this.playerGroups[index];
     }
-    
+
+    // Gets a single group
+    public String getPlayerFormat() {
+    	return this.playerFormat;
+    }
+
     // Sets the player's name.
     public void setPlayerName(String playerName) {
     	this.playerName = playerName;
@@ -103,8 +110,16 @@ public class EChatMessage implements Listener {
     	this.playerMessage = playerMessage;
     }
     
-    // Sets a single group
+    // Sets the player's single group.
     public void setPlayerGroups(String group) {
-    	this.playerGroups[0] = group;
+    	// Make sure the array is longer then zero.
+    	if (this.playerGroups.length >= 0) {
+    		this.playerGroups[0] = group;
+    	}
+    }
+    
+    // Sets the player's format.
+    public void setPlayerFormat(String format) {
+    	this.playerFormat = format;
     }
 }
