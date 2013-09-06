@@ -40,7 +40,7 @@ public class EChat extends BukkitComponent{
     	bungeeCord = new EChatBungeeCord();
         CommandBook.registerEvents(message);
         
-        // Send to other servers when you have BungeeCord
+        // Send to other servers when you have BungeeCord enabled.
         if (config.bungeecord) {
         	Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(CommandBook.inst(), "BungeeCord");
         	Bukkit.getServer().getMessenger().registerIncomingPluginChannel(CommandBook.inst(), "BungeeCord", bungeeCord);
