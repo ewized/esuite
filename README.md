@@ -1,16 +1,17 @@
 ![eSuite][logo]
 ======
 A collection of mods for [Year4000]. Theses mods or components expand the functionally of [CommandBook].
-The componets in this suite range from simple components all the way to the complex components.
+The components in this suite range from simple components all the way to the complex components.
 
-  * eBetterPortal - Allows end and nether portals send you to spawn point.
-  * eChat - Chat formating with features.
-  * eComponents - Shows the components that are running in this server.
-  * eCurrency - Players balance to buy and sell on the server.
-  * eJoinMessage - Login messages that depends on last join.
-  * eProtect - Protect block that you dont want others to break or interact with.
-  * eRandomNameColor - When players login their username will be a random color.
-  * eStaffMode - Staff member can switch to their staff mode with permissions and separate inventories.
+    * eBetterPortal - Portals have more features than the default ones.
+    * eChat - Chat formatting with features.
+    * eComponents - Shows the components that are running in this server.
+    * eCurrency - Players balance to buy and sell on the server.
+    * eInvSee - Look or edit players enderchest or inventories.
+    * eJoinMessage - Login messages that depends on last join.
+    * eProtect - Protect block that you dont want others to break or interact with.
+    * eRandomNameColor - When players login their username will be a random color.
+    * eRespawn - Bring back classic death spawning.
 
 Compiling
 ------
