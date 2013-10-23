@@ -26,7 +26,7 @@ eSuite and the components in this collection of mods is licensed under the [GNU 
 
 eSuite Copyright &copy; 2013 Joshua Rodriguez [http://www.ewized.com/][ewized]
 
-[logo]: https://dl.dropboxusercontent.com/u/13001201/eSuite.png
+[logo]: http://dev.bukkit.org/media/images/61/179/eSuite.png
 [license]: https://github.com/Year4000/esuite/blob/master/LICENSE.md
 [commandbook]: https://github.com/sk89q/commandbook
 [year4000]: http://www.year4000.net/
