@@ -26,7 +26,7 @@ public class EJoinMessage extends BukkitComponent implements Listener {
 	private LocalConfiguration config;
 	
     public void enable() {
-    	config = configure(new LocalConfiguration());
+        config = configure(new LocalConfiguration());
         CommandBook.registerEvents(this);
         logger.log(Level.INFO, component + " version " + version + " has been enabled.");
     }
