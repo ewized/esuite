@@ -16,34 +16,34 @@ public class EChat extends BukkitComponent{
 	private Logger logger = Logger.getLogger(component);
 	private String version = this.getClass().getPackage().getImplementationVersion();
 	private static EChat instance;
-	private EChatBungeeCord bungeeCord;
-	private EChatConfig config;
-	private EChatMessage message;
-	private EChatSender sender;
-	
-	// Get the instance of EChat
-	public EChat() {
+	private BungeeCord bungeeCord;
+	private Config config;
+	private Message message;
+	private Sender sender;
+
+    // Get the instance of EChat
+    public EChat() {
         super();
         instance = this;
     }
 
-	// Returns the instance of EChat.
+    // Returns the instance of EChat.
     public static EChat inst() {
         return instance;
     }
 
     public void enable() {
-    	// Give the other classes an instance of EChat.
-    	config = configure(new EChatConfig());
-    	sender = new EChatSender();
-    	message = new EChatMessage();
-    	bungeeCord = new EChatBungeeCord();
+        // Give the other classes an instance of EChat.
+        config = configure(new Config());
+        sender = new Sender();
+        message = new Message();
+        bungeeCord = new BungeeCord();
         CommandBook.registerEvents(message);
-        
+
         // Send to other servers when you have BungeeCord enabled.
         if (config.bungeecord) {
-        	Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(CommandBook.inst(), "BungeeCord");
-        	Bukkit.getServer().getMessenger().registerIncomingPluginChannel(CommandBook.inst(), "BungeeCord", bungeeCord);
+            Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(CommandBook.inst(), "BungeeCord");
+            Bukkit.getServer().getMessenger().registerIncomingPluginChannel(CommandBook.inst(), "BungeeCord", bungeeCord);
         }
         logger.log(Level.INFO, component + " version " + version + " has been enabled.");
     }
@@ -53,24 +53,24 @@ public class EChat extends BukkitComponent{
         configure(config);
         logger.log(Level.INFO, component + " has been reloaded.");
     }
-    
-	// Returns the EChatConfig instance.
-    public EChatConfig getEChatConfig() {
-    	return this.config;
+
+    // Returns the Config instance.
+    public Config getConfig() {
+        return this.config;
     }
-    
-	// Returns the EChatBungeeCord instance.
-    public EChatBungeeCord getEChatBungeeCord() {
-    	return this.bungeeCord;
+
+    // Returns the BungeeCord instance.
+    public BungeeCord getBungeeCord() {
+        return this.bungeeCord;
     }
-    
-	// Returns the EChatMessage instance.
-    public EChatMessage getEChatMessage() {
-    	return this.message;
+
+    // Returns the Message instance.
+    public Message getMessage() {
+        return this.message;
     }
-    
-    // Returns the EChatSender instance.
-    public EChatSender getEChatSender() {
-    	return this.sender;
+
+    // Returns the Sender instance.
+    public Sender getSender() {
+        return this.sender;
     }
 }
