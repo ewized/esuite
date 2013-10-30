@@ -34,7 +34,7 @@ public class Message implements Listener {
         playerGroups = wepif.getGroups(player); 
 
         //Checks where to send the chat.
-        if (EChat.inst().getEChatConfig().bungeecord) {
+        if (EChat.inst().getConfig().bungeecord) {
             playerFormat = EChat.inst().getConfig().serverFormat;
             EChat.inst().getBungeeCord().sendChatBungeeCord();
         }
