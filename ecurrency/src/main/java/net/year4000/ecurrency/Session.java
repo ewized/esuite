@@ -8,7 +8,7 @@ import com.zachsthings.libcomponents.config.Setting;
 public class Session extends PersistentSession {
     @Setting("balance") private double balance = 0;
 
-    protected ECurrencySession() {
+    protected Session() {
     	super(-1);
     }
 
