@@ -5,9 +5,9 @@ import java.text.DecimalFormat;
 import com.sk89q.commandbook.session.PersistentSession;
 import com.zachsthings.libcomponents.config.Setting;
 
-public class ECurrencySession extends PersistentSession {
+public class Session extends PersistentSession {
     @Setting("balance") private double balance = 0;
-    
+
     protected ECurrencySession() {
     	super(-1);
     }
@@ -18,7 +18,7 @@ public class ECurrencySession extends PersistentSession {
 
     public void setBalance(double balance) {
     	DecimalFormat format = new DecimalFormat("#.");
-    	
+
     	if (this.balance != 0 && balance > 0) {
     	    this.balance = Double.valueOf(format.format(balance));
     	}
