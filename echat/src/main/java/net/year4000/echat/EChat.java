@@ -8,7 +8,7 @@ import com.zachsthings.libcomponents.ComponentInformation;
 import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.messaging.Messenger;
+import org.bukkit.plugin.messaging.StandarMessenger;
 
 @ComponentInformation(friendlyName = "eChat",
         desc = "Chat formatting with features.")
@@ -16,7 +16,8 @@ public class EChat extends BukkitComponent{
 
 	private String component = "[eChat]";
 	private Logger logger = Logger.getLogger(component);
-	private String version = this.getClass().getPackage().getImplementationVersion();
+	private String version =
+            this.getClass().getPackage().getImplementationVersion();
 	private static EChat instance;
 	private BungeeCord bungeeCord;
 	private Config config;
@@ -44,7 +45,7 @@ public class EChat extends BukkitComponent{
 
         // Send to other servers when you have BungeeCord enabled.
         if (config.bungeecord) {
-            Messenger messenger = Bukkit.getServer().getMessender();
+            Messenger messenger = Bukkit.getServer().getMessenger();
             messenger.registerOutgoingPluginChannel(CommandBook.inst(),
                     "BungeeCord");
             messenger.registerIncomingPluginChannel(CommandBook.inst(),
