@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.year4000</groupId>
   <artifactId>echat</artifactId>
-  <version>5</version>
+  <version>6</version>
   <name>eChat</name>
   <description>Chat formatting with features.</description>
   
