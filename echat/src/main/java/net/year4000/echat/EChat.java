@@ -8,7 +8,7 @@ import com.zachsthings.libcomponents.ComponentInformation;
 import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.messaging.StandarMessenger;
+import org.bukkit.plugin.messaging.StandardMessenger;
 
 @ComponentInformation(friendlyName = "eChat",
         desc = "Chat formatting with features.")
