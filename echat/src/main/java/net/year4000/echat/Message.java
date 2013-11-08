@@ -9,7 +9,8 @@ import com.sk89q.wepif.PermissionsResolverManager;
 
 public class Message implements Listener {
     // Grabs the needed classes to make this work.
-    private PermissionsResolverManager wepif = PermissionsResolverManager.getInstance();
+    private PermissionsResolverManager wepif =
+            PermissionsResolverManager.getInstance();
 
     // The vars of the plugin.
     private Player player;
@@ -35,10 +36,10 @@ public class Message implements Listener {
 
         //Checks where to send the chat.
         if (EChat.inst().getConfig().bungeecord) {
-            playerFormat = EChat.inst().getConfig().serverFormat;
+            playerFormat = EChat.inst().getConfig().server;
             EChat.inst().getBungeeCord().sendChatBungeeCord();
         }
-        playerFormat = EChat.inst().getConfig().chatFormat;
+        playerFormat = EChat.inst().getConfig().chat;
         EChat.inst().getSender().sendChatMessage();
     	
         // Cancels the message as the plugin will send the messages itself.

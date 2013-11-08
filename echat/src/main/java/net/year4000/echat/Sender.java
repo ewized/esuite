@@ -15,7 +15,8 @@ public class Sender {
         String playerMessage = EChat.inst().getMessage().getPlayerMessage();
         String chatFormat = EChat.inst().getMessage().getPlayerFormat();
         String formatMessage = formatChat(null, chatFormat);
-        Bukkit.getScheduler().runTaskAsynchronously(CommandBook.inst(), new SendMessage(playerName, playerMessage, formatMessage));
+        Bukkit.getScheduler().runTaskAsynchronously(CommandBook.inst(),
+                new SendMessage(playerName, playerMessage, formatMessage));
     }
 
     // Sends the chat in its own thread.
@@ -25,25 +26,29 @@ public class Sender {
         private String playerMessage;
         private String formatMessage;
 
-        public SendMessage(String playerName,String playerMessage, String formatMessage) {
-            this.playerName = playerName;
-            this.playerMessage = playerMessage;
-            this.formatMessage = formatMessage;
+        public SendMessage(String name,String message, String format) {
+            playerName = name;
+            playerMessage = message;
+            formatMessage = format;
         }
 
         // Sends the message to each player on the server and the console.
         @Override
         public void run() {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                // Check if the your trying to mention a player and notify that player.
-                if (checkName(this.playerName, player.getName(), this.playerMessage)) {
-                    player.playSound(player.getLocation(), Sound.NOTE_PLING, 1, 0);
-                    player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC + ChatColor.stripColor(this.formatMessage));
+                // Check if the your trying to mention a player
+                // and notify that player.
+                if (checkName(playerName, player.getName(), playerMessage)) {
+                    Location playerLocation = player.getLocation();
+                    player.playSound(playerLocation, Sound.NOTE_PLING, 1, 0);
+                    player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC
+                            + ChatColor.stripColor(formatMessage));
                 } else {
-                    player.sendMessage(this.formatMessage);
+                    player.sendMessage(formatMessage);
                 }
             }
-            Bukkit.getConsoleSender().sendMessage(ChatColor.stripColor(this.formatMessage));
+            String stripedMessage = ChatColor.stripColor(formatMessage);
+            Bukkit.getConsoleSender().sendMessage(stripedMessage);
         }
     }
 
@@ -55,7 +60,8 @@ public class Sender {
         for (String word : msg.split(" ")) {
             if (word.length() > MINSIZE && word.length() <= sender.length()) {
                 word = word.toLowerCase();
-                if (word.startsWith(sender.substring(0, word.length()-1).toLowerCase())) {
+                String shortSender = sender.substring(0, word.length()-1);
+                if (word.startsWith(shortSender.toLowerCase())) {
                     if (!player.contains(word)) {
                         return true;
                     }
@@ -68,16 +74,22 @@ public class Sender {
     // Formats the chat by replacing predefined and server defined variables.
     private String formatChat(Player player, String chatFormat) {
         // Predefined chat options.
-        chatFormat = chatFormat.replace("%player%", EChat.inst().getMessage().getPlayerName());
-        chatFormat = chatFormat.replace("%displayname%", EChat.inst().getMessage().getPlayerDisplayName());
-        chatFormat = chatFormat.replace("%world%", EChat.inst().getMessage().getPlayerWorldName());
-        chatFormat = chatFormat.replace("%server%", EChat.inst().getMessage().getPlayerServer());
-        chatFormat = chatFormat.replace("%group%", EChat.inst().getMessage().getPlayerGroupName(0));
+        chatFormat = chatFormat.replace("%player%",
+                EChat.inst().getMessage().getPlayerName());
+        chatFormat = chatFormat.replace("%displayname%",
+                EChat.inst().getMessage().getPlayerDisplayName());
+        chatFormat = chatFormat.replace("%world%",
+                EChat.inst().getMessage().getPlayerWorldName());
+        chatFormat = chatFormat.replace("%server%",
+                EChat.inst().getMessage().getPlayerServer());
+        chatFormat = chatFormat.replace("%group%",
+                EChat.inst().getMessage().getPlayerGroupName(0));
 
         // Check if their is a server defined option.
-        String tempData = "%test%"+chatFormat;
+        String tempData = "%%"+chatFormat;
         for (String word : tempData.split("%")) {
-            String option = EChat.inst().getConfig().getOption(EChat.inst().getMessage().getPlayerGroupName(0), word);
+            String group = EChat.inst().getMessage().getPlayerGroupName(0);
+            String option = EChat.inst().getConfig().getOption(group, word);
             if (option != word) {
                 chatFormat = chatFormat.replace("%" + word + "%", option);
             }
@@ -88,10 +100,12 @@ public class Sender {
         // Checks if the player has the permission to use colors in this chat.
         if (player != null) {
             if (CommandBook.inst().hasPermission(player, "echat.colors")) {
-                chatFormat = replaceColor(chatFormat.replace("%message%", EChat.inst().getMessage().getPlayerMessage()));
+                chatFormat = replaceColor(chatFormat.replace("%message%",
+                        EChat.inst().getMessage().getPlayerMessage()));
             }
         } else {
-            chatFormat = chatFormat.replace("%message%",  EChat.inst().getMessage().getPlayerMessage());
+            chatFormat = chatFormat.replace("%message%",
+                    EChat.inst().getMessage().getPlayerMessage());
         }
 
         return chatFormat;

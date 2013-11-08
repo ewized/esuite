@@ -27,7 +27,8 @@ public class BungeeCord implements PluginMessageListener {
             msgout.writeUTF(EChat.inst().getMessage().getPlayerGroupName(0));
             msgout.writeUTF(EChat.inst().getMessage().getPlayerMessage());
             msgout.writeUTF(EChat.inst().getMessage().getPlayerFormat());
-            msgout.writeShort(EChat.inst().getMessage().getPlayerMessage().length());
+            int data = EChat.inst().getMessage().getPlayerMessage().length();
+            msgout.writeShort(data);
 
             // Send out to BungeeCord.
             ByteArrayOutputStream b = new ByteArrayOutputStream();
@@ -37,7 +38,8 @@ public class BungeeCord implements PluginMessageListener {
             out.writeUTF("eChat");
             out.writeShort(msgbytes.toByteArray().length);
             out.write(msgbytes.toByteArray());
-            Bukkit.getOnlinePlayers()[0].sendPluginMessage(CommandBook.inst(), "BungeeCord", b.toByteArray());
+            Bukkit.getOnlinePlayers()[0].sendPluginMessage(CommandBook.inst(),
+                    "BungeeCord", b.toByteArray());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -45,25 +47,29 @@ public class BungeeCord implements PluginMessageListener {
 
     // Receive the data from another server and processes that chat.
     @Override
-    public void onPluginMessageReceived(String channel, Player player, byte[] data) {
+    public void onPluginMessageReceived(String channel, Player player,
+            byte[] data) {
         // Make sure to get results only from BungeeCord.
         if (channel.equals("BungeeCord")) {
             try {
-                DataInputStream in = new DataInputStream(new ByteArrayInputStream(data));
+                DataInputStream in =
+                        new DataInputStream(new ByteArrayInputStream(data));
                 String subchannel = in.readUTF();
                 short len = in.readShort();
                 byte[] msgbytes = new byte[len];
                 in.readFully(msgbytes);
-                DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+                DataInputStream msgin =
+                        new DataInputStream(new ByteArrayInputStream(msgbytes));
                 // Only get data from eChat
                 if (subchannel.equals("eChat")) {
-                    EChat.inst().getMessage().setPlayerName(msgin.readUTF());
-                    EChat.inst().getMessage().setPlayerDisplayName(msgin.readUTF());
-                    EChat.inst().getMessage().setPlayerServer(msgin.readUTF());
-                    EChat.inst().getMessage().setPlayerWorldName(msgin.readUTF());
-                    EChat.inst().getMessage().setPlayerGroups(msgin.readUTF());
-                    EChat.inst().getMessage().setPlayerMessage(msgin.readUTF());
-                    EChat.inst().getMessage().setPlayerFormat(msgin.readUTF());
+                    String messageUTF = msgin.readUTF();
+                    EChat.inst().getMessage().setPlayerName(messageUTF);
+                    EChat.inst().getMessage().setPlayerDisplayName(messageUTF);
+                    EChat.inst().getMessage().setPlayerServer(messageUTF);
+                    EChat.inst().getMessage().setPlayerWorldName(messageUTF);
+                    EChat.inst().getMessage().setPlayerGroups(messageUTF);
+                    EChat.inst().getMessage().setPlayerMessage(messageUTF);
+                    EChat.inst().getMessage().setPlayerFormat(messageUTF);
 
                     EChat.inst().getSender().sendChatMessage();
                 }
