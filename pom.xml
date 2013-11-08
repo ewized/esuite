@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.year4000</groupId>
   <artifactId>esuite</artifactId>
-  <version>7</version>
+  <version>8</version>
   <name>eSuite</name>
   <description>A collection of mods for Year4000. Theses mods or components expand the functionally of CommandBook. The components in this suite range from simple components all the way to the complex components.</description>
   <packaging>pom</packaging>
