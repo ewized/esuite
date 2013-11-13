@@ -3,7 +3,7 @@ package net.year4000.echat;
 import com.zachsthings.libcomponents.config.ConfigurationBase;
 import com.zachsthings.libcomponents.config.Setting;
 
-public class Config extends ConfigurationBase {
+public class Configuration extends ConfigurationBase {
 
     // Define default config options.
     @Setting("chat-format") public String chat = "<%player%> %message%";
@@ -18,10 +18,10 @@ public class Config extends ConfigurationBase {
      * @return Option value.
      */
     public String getOption(String group, String option) {
-        Object config = EChat.inst().getRawConfiguration().getProperty("groups."
+        Object configuration = EChat.inst().getRawConfiguration().getProperty("groups."
                 + group + "." + option);
-        if (config != null) {
-            return config.toString();
+        if (configuration != null) {
+            return configuration.toString();
         }
         return option;
     }

@@ -20,7 +20,7 @@ public class EChat extends BukkitComponent{
             this.getClass().getPackage().getImplementationVersion();
 	private static EChat instance;
 	private BungeeCord bungeeCord;
-	private Config config;
+	private Configuration configuration;
 	private Message message;
 	private Sender sender;
 
@@ -43,14 +43,14 @@ public class EChat extends BukkitComponent{
 
     public void enable() {
         // Give the other classes an instance of EChat.
-        config = configure(new Config());
+        configuration = configure(new Configuration());
         sender = new Sender();
         message = new Message();
         bungeeCord = new BungeeCord();
         CommandBook.registerEvents(message);
 
         // Send to other servers when you have BungeeCord enabled.
-        if (config.bungeecord) {
+        if (configuration.bungeecord) {
             Messenger messenger = Bukkit.getServer().getMessenger();
             messenger.registerOutgoingPluginChannel(CommandBook.inst(),
                     "BungeeCord");
@@ -63,17 +63,17 @@ public class EChat extends BukkitComponent{
 
     public void reload() {
         super.reload();
-        configure(config);
+        configure(configuration);
         logger.log(Level.INFO, component + " has been reloaded.");
     }
 
     /**
-     * Gets the instance of the Config class.
+     * Gets the instance of the Configuration class.
      *
-     * @return Config instance
+     * @return Configuration instance
      */
-    public Config getConfig() {
-        return this.config;
+    public Configuration getConfiguration() {
+        return this.configuration;
     }
 
     /**

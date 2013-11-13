@@ -106,7 +106,7 @@ public class Sender {
         String tempData = "%%"+chatFormat;
         for (String word : tempData.split("%")) {
             String group = EChat.inst().getMessage().getPlayerGroupName(0);
-            String option = EChat.inst().getConfig().getOption(group, word);
+            String option = EChat.inst().getConfiguration().getOption(group, word);
             if (option != word) {
                 chatFormat = chatFormat.replace("%" + word + "%", option);
             }

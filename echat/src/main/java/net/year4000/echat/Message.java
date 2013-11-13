@@ -37,11 +37,11 @@ public class Message implements Listener {
         playerGroups = wepif.getGroups(player); 
 
         //Checks where to send the chat.
-        if (EChat.inst().getConfig().bungeecord) {
-            playerFormat = EChat.inst().getConfig().server;
+        if (EChat.inst().getConfiguration().bungeecord) {
+            playerFormat = EChat.inst().getConfiguration().server;
             EChat.inst().getBungeeCord().sendChatBungeeCord();
         }
-        playerFormat = EChat.inst().getConfig().chat;
+        playerFormat = EChat.inst().getConfiguration().chat;
         EChat.inst().getSender().sendChatMessage();
     	
         // Cancels the message as the plugin will send the messages itself.
