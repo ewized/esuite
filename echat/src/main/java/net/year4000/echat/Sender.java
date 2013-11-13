@@ -43,13 +43,17 @@ public class Sender {
         @Override
         public void run() {
             for (Player player : Bukkit.getOnlinePlayers()) {
+                String name = player.getName();
                 // Check if the your trying to mention a player
                 // and notify that player.
-                if (checkName(playerName, player.getName(), playerMessage)) {
+                if (checkName(playerName, name, playerMessage)) {
                     Location playerLocation = player.getLocation();
                     player.playSound(playerLocation, Sound.NOTE_PLING, 1, 0);
-                    player.sendMessage(ChatColor.RED + "" + ChatColor.ITALIC
-                            + ChatColor.stripColor(formatMessage));
+                    // Change the mention to current mention
+                    String word = getWord(playerName, name, playerMessage);
+                    String at = ChatColor.AQUA + "@" + name + ChatColor.RESET;
+                    String msg = formatMessage.replaceAll(word, at);
+                    player.sendMessage(msg);
                 } else {
                     player.sendMessage(formatMessage);
                 }
@@ -57,6 +61,27 @@ public class Sender {
             String stripedMessage = ChatColor.stripColor(formatMessage);
             Bukkit.getConsoleSender().sendMessage(stripedMessage);
         }
+    }
+
+    /**
+     * Checks if a word in the string matches the player.
+     * 
+     * @return the word that my be the player.
+     */
+    private String getWord(String player, String sender, String msg) {
+        final int MINSIZE = 3;
+        for (String word : msg.split(" ")) {
+            if (word.length() > MINSIZE && word.length() <= sender.length()) {
+                word = word.toLowerCase();
+                String shortSender = sender.substring(0, word.length()-1);
+                if (word.startsWith(shortSender.toLowerCase())) {
+                    if (!player.contains(word)) {
+                        return word;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /**
