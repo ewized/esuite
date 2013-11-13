@@ -14,7 +14,9 @@ import com.sk89q.commandbook.CommandBook;
 
 public class BungeeCord implements PluginMessageListener {
 
-    // Send the needed data to every single server.
+    /**
+     * Send the needed data to every single server.
+     */
     public void sendChatBungeeCord() {
         try {
             // Send out to eChat.
@@ -45,7 +47,9 @@ public class BungeeCord implements PluginMessageListener {
         }
     }
 
-    // Receive the data from another server and processes that chat.
+    /**
+     * Receive the data from another server and processes that chat.
+     */
     @Override
     public void onPluginMessageReceived(String channel, Player player,
             byte[] data) {

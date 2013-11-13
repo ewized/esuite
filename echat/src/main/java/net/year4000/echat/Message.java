@@ -22,7 +22,9 @@ public class Message implements Listener {
     private String[] playerGroups;
     private String playerFormat;
 
-    // Listens for each chat message and sets up the vars.
+    /**
+     * Listens for each chat message and sets up the vars.
+     */
     @EventHandler(ignoreCancelled = true)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         // Sets the vars to be used later.
@@ -46,72 +48,118 @@ public class Message implements Listener {
         event.setCancelled(true);
     }
 
-    // Gets the player's name.
+    /**
+     * Gets the player's name.
+     *
+     * @return player's name.
+     */
     public String getPlayerName() {
         return this.playerName;
     }
 
-    // Gets the player's display name.
+    /**
+     * Gets the player's display name on the server the player is log in to.
+     *
+     * @return player's display name.
+     */
     public String getPlayerDisplayName() {
         return this.playerDisplayName;
     }
 
-    // Gets the player's world.
+    /**
+     * Gets the world that the player is in on the server.
+     *
+     * @return player's current world.
+     */
     public String getPlayerWorldName() {
         return this.playerWorldName;
     }
 
-    // Gets the player's server.
+    /**
+     * Gets the name of the server that the player is log in to.
+     *
+     * @return player's current server.
+     */
     public String getPlayerServer() {
         return this.playerServer;
     }
 
-    // Gets the player's message.
+    /**
+     * Gets the player's chat message from the server that the player is log
+     * in to.
+     *
+     * @return player's chat message.
+     */
     public String getPlayerMessage() {
         return this.playerMessage;
     }
 
-    // Gets an array of the player's groups.
+    /**
+     * Gets an array of the player's groups on the server that the player is
+     * log in to.
+     *
+     * @return groups the player is in.
+     */
     public String[] getPlayerGroups() {
         return this.playerGroups;
     }
 
-    // Gets a single group
+    /**
+     * Gets the default group from the server that the player is log in to.
+     *
+     * @return player's default group name.
+     */
     public String getPlayerGroupName(int index) {
         return this.playerGroups[index];
     }
 
-    // Gets a single group
+    /**
+     * Gets the message format from the server that the player is log in to.
+     *
+     * @return message format from the server.
+     */
     public String getPlayerFormat() {
         return this.playerFormat;
     }
 
-    // Sets the player's name.
+    /**
+     * Sets the player's name.
+     */
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
 
-    // Sets the player's display name.
+    /**
+     * Sets the player's display name.
+     */
     public void setPlayerDisplayName(String playerDisplayName) {
         this.playerDisplayName = playerDisplayName;
     }
 
-    // Sets the player's world.
+    /**
+     * Sets the player's world.
+     */
     public void setPlayerWorldName(String playerWorldName) {
         this.playerWorldName = playerWorldName;
     }
 
-    // Sets the player's server.
+    /**
+     * Sets the player's server.
+     */
     public void setPlayerServer(String playerServer) {
         this.playerServer = playerServer;
     }
 
-    // Sets the player's message.
+    /**
+     * Sets the player's message.
+     */
     public void setPlayerMessage(String playerMessage) {
         this.playerMessage = playerMessage;
     }
 
-    // Sets the player's single group.
+    /**
+     * Sets the player's single group.
+     */
     public void setPlayerGroups(String group) {
         // Make sure the array is longer then zero.
         if (this.playerGroups.length >= 0) {
@@ -119,7 +167,9 @@ public class Message implements Listener {
         }
     }
 
-    // Sets the player's format.
+    /**
+     * Sets the player's format.
+     */
     public void setPlayerFormat(String format) {
         this.playerFormat = format;
     }

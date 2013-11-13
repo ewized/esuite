@@ -10,7 +10,9 @@ import com.sk89q.commandbook.CommandBook;
 
 public class Sender {
 
-    // Sets up the variables before sending it in a thread.
+    /**
+     * Sets up the variables before sending it in a thread.
+     */
     public void sendChatMessage() {
         String playerName = EChat.inst().getMessage().getPlayerName();
         String playerMessage = EChat.inst().getMessage().getPlayerMessage();
@@ -20,7 +22,9 @@ public class Sender {
                 new SendMessage(playerName, playerMessage, formatMessage));
     }
 
-    // Sends the chat in its own thread.
+    /**
+     * Sends the chat in its own thread.
+     */
     private class SendMessage implements Runnable {
 
         private String playerName;
@@ -33,7 +37,9 @@ public class Sender {
             formatMessage = format;
         }
 
-        // Sends the message to each player on the server and the console.
+        /**
+         * Sends the message to each player on the server and the console.
+         */
         @Override
         public void run() {
             for (Player player : Bukkit.getOnlinePlayers()) {
@@ -53,9 +59,15 @@ public class Sender {
         }
     }
 
-    // Checks if the message is not saying him self.
-    // Player is the player that we are checking against.
-    // Sender is the player that sent the message.
+    /**
+     * Checks if a word in the string matches the player.
+     * 
+     * Checks if the message is not saying him self.
+     * Player is the player that we are checking against.
+     * Sender is the player that sent the message.
+     *
+     * @return true If a word matches the player's name.
+     */
     private boolean checkName(String player, String sender, String msg) {
         final int MINSIZE = 3;
         for (String word : msg.split(" ")) {
@@ -72,7 +84,11 @@ public class Sender {
         return false;
     }
 
-    // Formats the chat by replacing predefined and server defined variables.
+    /**
+     * Formats the chat by replacing predefined and server defined variables.
+     *
+     * @return the chat after all vars has been replaced.
+     */
     private String formatChat(Player player, String chatFormat) {
         // Predefined chat options.
         chatFormat = chatFormat.replace("%player%",
@@ -112,7 +128,11 @@ public class Sender {
         return chatFormat;
     }
 
-    // Replace any color defined by Minecraft.
+    /**
+     * Replace any color defined by Minecraft.
+     *
+     * @return the message after colors has been added.
+     */
     private String replaceColor(String message) {
         for (ChatColor c : ChatColor.values()) {
             message = message.replaceAll("&" + c.getChar(), c.toString()); 

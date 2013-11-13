@@ -24,13 +24,19 @@ public class EChat extends BukkitComponent{
 	private Message message;
 	private Sender sender;
 
-    // Get the instance of EChat
+    /**
+     * Get the instance of EChat
+     */
     public EChat() {
         super();
         instance = this;
     }
 
-    // Returns the instance of EChat.
+    /**
+     * Returns the instance of EChat.
+     *
+     * @return EChat instance.
+     */
     public static EChat inst() {
         return instance;
     }
@@ -61,22 +67,38 @@ public class EChat extends BukkitComponent{
         logger.log(Level.INFO, component + " has been reloaded.");
     }
 
-    // Returns the Config instance.
+    /**
+     * Gets the instance of the Config class.
+     *
+     * @return Config instance
+     */
     public Config getConfig() {
         return this.config;
     }
 
-    // Returns the BungeeCord instance.
+    /**
+     * Gets the instance of the BungeeCord class.
+     *
+     * @return BungeeCord instance
+     */
     public BungeeCord getBungeeCord() {
         return this.bungeeCord;
     }
 
-    // Returns the Message instance.
+    /**
+     * Gets the instance of the Message class.
+     *
+     * @return Message instance.
+     */
     public Message getMessage() {
         return this.message;
     }
 
-    // Returns the Sender instance.
+    /**
+     * Gets the instance of the Sender class.
+     *
+     * @return Sender instance.
+     */
     public Sender getSender() {
         return this.sender;
     }

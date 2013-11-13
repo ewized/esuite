@@ -12,7 +12,11 @@ public class Config extends ConfigurationBase {
     @Setting("groups.group.prefix") public String groupPrefix = "groupprefix";
     @Setting("groups.group.suffix") public String groupSuffix = "groupprefix";
 
-    // Get a special option that is defined per player's group.
+    /**
+     * Get a special option that is defined per player's group.
+     *
+     * @return Option value.
+     */
     public String getOption(String group, String option) {
         Object config = EChat.inst().getRawConfiguration().getProperty("groups."
                 + group + "." + option);
