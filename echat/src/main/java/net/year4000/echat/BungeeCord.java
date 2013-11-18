@@ -62,18 +62,16 @@ public class BungeeCord implements PluginMessageListener {
                 short len = in.readShort();
                 byte[] msgbytes = new byte[len];
                 in.readFully(msgbytes);
-                DataInputStream msgin =
-                        new DataInputStream(new ByteArrayInputStream(msgbytes));
+                DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
                 // Only get data from eChat
                 if (subchannel.equals("eChat")) {
-                    String messageUTF = msgin.readUTF();
-                    EChat.inst().getMessage().setPlayerName(messageUTF);
-                    EChat.inst().getMessage().setPlayerDisplayName(messageUTF);
-                    EChat.inst().getMessage().setPlayerServer(messageUTF);
-                    EChat.inst().getMessage().setPlayerWorldName(messageUTF);
-                    EChat.inst().getMessage().setPlayerGroups(messageUTF);
-                    EChat.inst().getMessage().setPlayerMessage(messageUTF);
-                    EChat.inst().getMessage().setPlayerFormat(messageUTF);
+                    EChat.inst().getMessage().setPlayerName(msgin.readUTF());
+                    EChat.inst().getMessage().setPlayerDisplayName(msgin.readUTF());
+                    EChat.inst().getMessage().setPlayerServer(msgin.readUTF());
+                    EChat.inst().getMessage().setPlayerWorldName(msgin.readUTF());
+                    EChat.inst().getMessage().setPlayerGroups(msgin.readUTF());
+                    EChat.inst().getMessage().setPlayerMessage(msgin.readUTF());
+                    EChat.inst().getMessage().setPlayerFormat(msgin.readUTF());
 
                     EChat.inst().getSender().sendChatMessage();
                 }
