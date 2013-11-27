@@ -125,12 +125,12 @@ public class Sender {
         chatFormat = chatFormat.replace("%server%",
                 EChat.inst().getMessage().getPlayerServer());
         chatFormat = chatFormat.replace("%group%",
-                EChat.inst().getMessage().getPlayerGroupName(0));
+                EChat.inst().getMessage().getPlayerGroup());
 
         // Check if their is a server defined option.
         String tempData = "%%"+chatFormat;
         for (String word : tempData.split("%")) {
-            String group = EChat.inst().getMessage().getPlayerGroupName(0);
+            String group = EChat.inst().getMessage().getPlayerGroup();
             String option = EChat.inst().getConfiguration().getOption(group, word);
             if (option != word) {
                 chatFormat = chatFormat.replace("%" + word + "%", option);

@@ -9,8 +9,7 @@ import com.sk89q.wepif.PermissionsResolverManager;
 
 public class Message implements Listener {
     // Grabs the needed classes to make this work.
-    private PermissionsResolverManager wepif =
-            PermissionsResolverManager.getInstance();
+    private PermissionsResolverManager wepif = PermissionsResolverManager.getInstance();
 
     // The vars of the plugin.
     private Player player;
@@ -19,7 +18,7 @@ public class Message implements Listener {
     private String playerWorldName;
     private String playerServer;
     private String playerMessage;
-    private String[] playerGroups;
+    private String playerGroup;
     private String playerFormat;
 
     /**
@@ -34,7 +33,7 @@ public class Message implements Listener {
         playerWorldName = player.getWorld().getName();
         playerServer = player.getServer().getServerName();
         playerMessage = event.getMessage();
-        playerGroups = wepif.getGroups(player); 
+        playerGroup = wepif.getGroups(player)[0]; 
 
         //Checks where to send the chat.
         if (EChat.inst().getConfiguration().bungeecord) {
@@ -95,22 +94,12 @@ public class Message implements Listener {
     }
 
     /**
-     * Gets an array of the player's groups on the server that the player is
-     * log in to.
-     *
-     * @return groups the player is in.
-     */
-    public String[] getPlayerGroups() {
-        return this.playerGroups;
-    }
-
-    /**
      * Gets the default group from the server that the player is log in to.
      *
      * @return player's default group name.
      */
-    public String getPlayerGroupName(int index) {
-        return this.playerGroups[index];
+    public String getPlayerGroup() {
+        return this.playerGroup;
     }
 
     /**
@@ -124,6 +113,8 @@ public class Message implements Listener {
 
     /**
      * Sets the player's name.
+     *
+     * @param playerName The name of the player.
      */
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
@@ -131,6 +122,8 @@ public class Message implements Listener {
 
     /**
      * Sets the player's display name.
+     *
+     * @param playerDisplayName The display name of the player.
      */
     public void setPlayerDisplayName(String playerDisplayName) {
         this.playerDisplayName = playerDisplayName;
@@ -138,6 +131,8 @@ public class Message implements Listener {
 
     /**
      * Sets the player's world.
+     *
+     * @param playerWorldName The player's current world name.
      */
     public void setPlayerWorldName(String playerWorldName) {
         this.playerWorldName = playerWorldName;
@@ -145,6 +140,8 @@ public class Message implements Listener {
 
     /**
      * Sets the player's server.
+     *
+     * @param playerServer The player's server name.
      */
     public void setPlayerServer(String playerServer) {
         this.playerServer = playerServer;
@@ -152,6 +149,8 @@ public class Message implements Listener {
 
     /**
      * Sets the player's message.
+     *
+     * @param playerMessage The player's message.
      */
     public void setPlayerMessage(String playerMessage) {
         this.playerMessage = playerMessage;
@@ -159,16 +158,17 @@ public class Message implements Listener {
 
     /**
      * Sets the player's single group.
+     *
+     * @param group The group the players in
      */
-    public void setPlayerGroups(String group) {
-        // Make sure the array is longer then zero.
-        if (this.playerGroups.length >= 0) {
-            this.playerGroups[0] = group;
-        }
+    public void setPlayerGroup(String group) {
+        this.playerGroup = group;
     }
 
     /**
      * Sets the player's format.
+     *
+     * @param format The chats format.
      */
     public void setPlayerFormat(String format) {
         this.playerFormat = format;
