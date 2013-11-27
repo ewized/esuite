@@ -15,6 +15,8 @@ public class Configuration extends ConfigurationBase {
     /**
      * Get a special option that is defined per player's group.
      *
+     * @param group The group of the player.
+     * @param option The option in the config for the group.
      * @return Option value.
      */
     public String getOption(String group, String option) {

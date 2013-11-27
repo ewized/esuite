@@ -66,6 +66,9 @@ public class Sender {
     /**
      * Checks if a word in the string matches the player.
      * 
+     * @param player The player what we are searching for.
+     * @param sender The sender of the message.
+     * @param msg The message to search for the player.
      * @return the word that my be the player.
      */
     private String getWord(String player, String sender, String msg) {
@@ -87,10 +90,9 @@ public class Sender {
     /**
      * Checks if a word in the string matches the player.
      * 
-     * Checks if the message is not saying him self.
-     * Player is the player that we are checking against.
-     * Sender is the player that sent the message.
-     *
+     * @param player The player what we are searching for.
+     * @param sender The sender of the message.
+     * @param msg The message to search for the player.
      * @return true If a word matches the player's name.
      */
     private boolean checkName(String player, String sender, String msg) {
@@ -112,6 +114,8 @@ public class Sender {
     /**
      * Formats the chat by replacing predefined and server defined variables.
      *
+     * @param player The player that sent the message.
+     * @param chatFormat The format for the chat.
      * @return the chat after all vars has been replaced.
      */
     private String formatChat(Player player, String chatFormat) {
@@ -156,6 +160,7 @@ public class Sender {
     /**
      * Replace any color defined by Minecraft.
      *
+     * @param message The raw form of the message.
      * @return the message after colors has been added.
      */
     private String replaceColor(String message) {

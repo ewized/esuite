@@ -49,6 +49,10 @@ public class BungeeCord implements PluginMessageListener {
 
     /**
      * Receive the data from another server and processes that chat.
+     *
+     * @param channel The channel of the Plugin Message.
+     * @param player The player that sent the plugin message.
+     * @param data The byte array of the plugin message.
      */
     @Override
     public void onPluginMessageReceived(String channel, Player player,
