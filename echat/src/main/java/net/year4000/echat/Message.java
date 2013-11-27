@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import com.sk89q.wepif.PermissionsResolverManager;
+import com.sk89q.commandbook.CommandBook;
 
 public class Message implements Listener {
     // Grabs the needed classes to make this work.
@@ -20,6 +21,7 @@ public class Message implements Listener {
     private String playerMessage;
     private String playerGroup;
     private String playerFormat;
+    private String playerColor;
 
     /**
      * Listens for each chat message and sets up the vars.
@@ -34,6 +36,12 @@ public class Message implements Listener {
         playerServer = player.getServer().getServerName();
         playerMessage = event.getMessage();
         playerGroup = wepif.getGroups(player)[0]; 
+
+        // Check if the player can use colors in the chat.
+        if (CommandBook.inst().hasPermission(player, "echat.colors"))
+            setPlayerColor("true");
+        else
+            setPlayerColor("false");
 
         //Checks where to send the chat.
         if (EChat.inst().getConfiguration().bungeecord) {
@@ -109,6 +117,29 @@ public class Message implements Listener {
      */
     public String getPlayerFormat() {
         return this.playerFormat;
+    }
+
+    /**
+     * Get if the player can use colors in the chat.
+     *
+     * @return true if the player can use the colors.
+     */
+    public String getPlayerColor() {
+        if (this.playerColor == null)
+            return "false";
+        return this.playerColor;
+    }
+
+    /**
+     * Set if the player can use colors in the chat.
+     *
+     * @param option Allow the player to use colors.
+     */
+    public void setPlayerColor(String option) {
+        if (option.equalsIgnoreCase("true"))
+            this.playerColor = "true";
+        else
+            this.playerColor = "false";
     }
 
     /**

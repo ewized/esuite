@@ -17,7 +17,7 @@ public class Sender {
         String playerName = EChat.inst().getMessage().getPlayerName();
         String playerMessage = EChat.inst().getMessage().getPlayerMessage();
         String chatFormat = EChat.inst().getMessage().getPlayerFormat();
-        String formatMessage = formatChat(null, chatFormat);
+        String formatMessage = formatChat(chatFormat);
         Bukkit.getScheduler().runTaskAsynchronously(CommandBook.inst(),
                 new SendMessage(playerName, playerMessage, formatMessage));
     }
@@ -118,7 +118,7 @@ public class Sender {
      * @param chatFormat The format for the chat.
      * @return the chat after all vars has been replaced.
      */
-    private String formatChat(Player player, String chatFormat) {
+    private String formatChat(String chatFormat) {
         // Predefined chat options.
         chatFormat = chatFormat.replace("%player%",
                 EChat.inst().getMessage().getPlayerName());
@@ -144,11 +144,9 @@ public class Sender {
         chatFormat = replaceColor(chatFormat);
 
         // Checks if the player has the permission to use colors in this chat.
-        if (player != null) {
-            if (CommandBook.inst().hasPermission(player, "echat.colors")) {
-                chatFormat = replaceColor(chatFormat.replace("%message%",
-                        EChat.inst().getMessage().getPlayerMessage()));
-            }
+        if (EChat.inst().getMessage().getPlayerColor().equalsIgnoreCase("true")) {
+            chatFormat = replaceColor(chatFormat.replace("%message%",
+                    EChat.inst().getMessage().getPlayerMessage()));
         } else {
             chatFormat = chatFormat.replace("%message%",
                     EChat.inst().getMessage().getPlayerMessage());
