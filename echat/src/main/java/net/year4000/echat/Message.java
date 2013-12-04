@@ -2,6 +2,7 @@ package net.year4000.echat;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
@@ -26,7 +27,7 @@ public class Message implements Listener {
     /**
      * Listens for each chat message and sets up the vars.
      */
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
         // Sets the vars to be used later.
         player = event.getPlayer();
