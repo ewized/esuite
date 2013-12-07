@@ -10,8 +10,9 @@ import com.sk89q.commandbook.CommandBook;
 
 import net.year4000.echat.Message;
 
-public class Sender implements Runnable{
+public class Sender implements Runnable {
 
+    private Configuration configuration = EChat.inst().getConfiguration();
     private Message message;
     private String playerName;
     private String playerMessage;
@@ -132,7 +133,7 @@ public class Sender implements Runnable{
         String tempData = "%%"+chatFormat;
         for (String word : tempData.split("%")) {
             String group = this.message.getPlayerGroup();
-            String option = EChat.inst().getConfiguration().getOption(group, word);
+            String option = configuration.getOption(group, word);
             if (option != word) {
                 chatFormat = chatFormat.replace("%" + word + "%", option);
             }

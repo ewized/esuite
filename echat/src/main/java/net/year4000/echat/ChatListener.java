@@ -25,6 +25,7 @@ public class ChatListener implements Listener {
         // An instance of the Message Class
         PermissionsResolverManager p = PermissionsResolverManager.getInstance();
         Message message = new Message();
+        Configuration configuration = EChat.inst().getConfiguration();
         Player player = event.getPlayer();
 
         // Sets the vars to be used later.
@@ -34,6 +35,7 @@ public class ChatListener implements Listener {
         message.setPlayerServer(player.getServer().getServerName());
         message.setPlayerMessage(event.getMessage());
         message.setPlayerGroup(p.getGroups(player)[0]);
+        message.setPlayerFormat(configuration.chat);
 
         // Check if the player can use colors in the chat.
         if (CommandBook.inst().hasPermission(player, "echat.colors"))
@@ -42,16 +44,15 @@ public class ChatListener implements Listener {
             message.setPlayerColor("false");
 
         // Checks where to send the chat and send the correct player format.
-        if (EChat.inst().getConfiguration().bungeecord) {
-            message.setPlayerFormat(EChat.inst().getConfiguration().server);
+        if (configuration.bungeecord) {
+            String localFormat = message.getPlayerFormat();
+            message.setPlayerFormat(configuration.server);
             BungeeCord bungeecord = new BungeeCord(message);
+            message.setPlayerFormat(localFormat);
         }
 
-        // After sending it reset it to local chat
-        message.setPlayerFormat(EChat.inst().getConfiguration().chat);
-
         // Check if Factions is installed
-        if (EChat.inst().getConfiguration().factions) {
+        if (configuration.factions) {
             FPlayer fplayer = FPlayers.i.get(player);
             message.setPlayerFaction(fplayer.getTag());
             message.setPlayerTitle(fplayer.getRole().getPrefix());
