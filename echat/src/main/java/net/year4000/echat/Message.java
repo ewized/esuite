@@ -41,6 +41,9 @@ public class Message {
      * @return player's name.
      */
     public String getPlayerName() {
+        if (this.playerName == null) {
+            return "";
+        }
         return this.playerName;
     }
 
@@ -50,6 +53,9 @@ public class Message {
      * @return player's display name.
      */
     public String getPlayerDisplayName() {
+        if (this.playerDisplayName == null) {
+            return "";
+        }
         return this.playerDisplayName;
     }
 
@@ -59,6 +65,9 @@ public class Message {
      * @return player's current world.
      */
     public String getPlayerWorldName() {
+        if (this.playerWorldName == null) {
+            return "";
+        }
         return this.playerWorldName;
     }
 
@@ -68,6 +77,9 @@ public class Message {
      * @return player's current server.
      */
     public String getPlayerServer() {
+        if (this.playerServer == null) {
+            return "";
+        }
         return this.playerServer;
     }
 
@@ -78,6 +90,9 @@ public class Message {
      * @return player's chat message.
      */
     public String getPlayerMessage() {
+        if (this.playerMessage == null) {
+            return "";
+        }
         return this.playerMessage;
     }
 
@@ -87,6 +102,9 @@ public class Message {
      * @return player's default group name.
      */
     public String getPlayerGroup() {
+        if (this.playerGroup == null) {
+            return "";
+        }
         return this.playerGroup;
     }
 
@@ -96,6 +114,9 @@ public class Message {
      * @return message format from the server.
      */
     public String getPlayerFormat() {
+        if (this.playerFormat == null) {
+            return "";
+        }
         return this.playerFormat;
     }
 
@@ -105,9 +126,10 @@ public class Message {
      * @return true if the player can use the colors.
      */
     public String getPlayerColor() {
-        if (this.playerColor == null)
+        if (this.playerColor == null || this.playerColor.equals("false")) {
             return "false";
-        return this.playerColor;
+        }
+        return "true";
     }
 
     /**
@@ -158,10 +180,12 @@ public class Message {
      * @param option Allow the player to use colors.
      */
     public void setPlayerColor(String option) {
-        if (option.equalsIgnoreCase("true"))
+        if (option.equals("true")) {
             this.playerColor = "true";
-        else
+        }
+        else {
             this.playerColor = "false";
+        }
     }
 
     /**
