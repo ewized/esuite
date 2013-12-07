@@ -9,6 +9,7 @@ public class Configuration extends ConfigurationBase {
     @Setting("chat-format") public String chat = "<%player%> %message%";
     @Setting("server-format") public String server = "(%player%) %message%";
     @Setting("bungeecord") public boolean bungeecord = false;
+    @Setting("factions") public boolean factions = false;
     @Setting("groups.group.prefix") public String groupPrefix = "groupprefix";
     @Setting("groups.group.suffix") public String groupSuffix = "groupprefix";
 

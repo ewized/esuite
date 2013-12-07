@@ -30,6 +30,8 @@ public class BungeeCord implements PluginMessageListener {
             msgout.writeUTF(EChat.inst().getMessage().getPlayerMessage());
             msgout.writeUTF(EChat.inst().getMessage().getPlayerFormat());
             msgout.writeUTF(EChat.inst().getMessage().getPlayerColor());
+            msgout.writeUTF(EChat.inst().getMessage().getPlayerFaction());
+            msgout.writeUTF(EChat.inst().getMessage().getPlayerTitle());
             int data = EChat.inst().getMessage().getPlayerMessage().length();
             msgout.writeShort(data);
 
@@ -78,6 +80,8 @@ public class BungeeCord implements PluginMessageListener {
                     EChat.inst().getMessage().setPlayerMessage(msgin.readUTF());
                     EChat.inst().getMessage().setPlayerFormat(msgin.readUTF());
                     EChat.inst().getMessage().setPlayerColor(msgin.readUTF());
+                    EChat.inst().getMessage().setPlayerFaction(msgin.readUTF());
+                    EChat.inst().getMessage().setPlayerTitle(msgin.readUTF());
 
                     EChat.inst().getSender().sendChatMessage();
                 }

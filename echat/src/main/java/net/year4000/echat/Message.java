@@ -9,6 +9,9 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import com.sk89q.wepif.PermissionsResolverManager;
 import com.sk89q.commandbook.CommandBook;
 
+import com.massivecraft.factions.FPlayer;
+import com.massivecraft.factions.FPlayers;
+
 public class Message implements Listener {
     // Grabs the needed classes to make this work.
     private PermissionsResolverManager wepif = PermissionsResolverManager.getInstance();
@@ -23,6 +26,8 @@ public class Message implements Listener {
     private String playerGroup;
     private String playerFormat;
     private String playerColor;
+    private String playerFaction;
+    private String playerTitle;
 
     /**
      * Listens for each chat message and sets up the vars.
@@ -44,11 +49,19 @@ public class Message implements Listener {
         else
             setPlayerColor("false");
 
-        //Checks where to send the chat.
+        // Checks where to send the chat.
         if (EChat.inst().getConfiguration().bungeecord) {
             playerFormat = EChat.inst().getConfiguration().server;
             EChat.inst().getBungeeCord().sendChatBungeeCord();
         }
+
+        // Check if Factions is installed
+        if (EChat.inst().getConfiguration().factions) {
+            FPlayer fplayer = FPlayers.i.get(player);
+            playerFaction = fplayer.getTag();
+            playerTitle = fplayer.getRole().getPrefix();
+        }
+
         playerFormat = EChat.inst().getConfiguration().chat;
         EChat.inst().getSender().sendChatMessage();
     	
@@ -129,6 +142,48 @@ public class Message implements Listener {
         if (this.playerColor == null)
             return "false";
         return this.playerColor;
+    }
+
+    /**
+     * Get the player's faction.
+     *
+     * @return the name of the player's faction
+     */
+    public String getPlayerFaction() {
+        if (this.playerFaction == null) {
+            return "";
+        }
+        return this.playerFaction;
+    }
+
+    /**
+     * Get the player's faction title.
+     *
+     * @return the player's title
+     */
+    public String getPlayerTitle() {
+        if (this.playerTitle == null) {
+            return "";
+        }
+        return this.playerTitle;
+    }
+
+    /**
+     * Set the players faction title.
+     *
+     * @param the player's title
+     */
+    public void setPlayerTitle(String title) {
+        this.playerTitle = title;
+    }
+
+    /**
+     * Set the players faction.
+     *
+     * @param the name of the player's faction
+     */
+    public void setPlayerFaction(String faction) {
+        this.playerFaction = faction;
     }
 
     /**

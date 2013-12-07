@@ -48,6 +48,13 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.massivecraft</groupId>
+      <artifactId>factions</artifactId>
+      <version>LATEST</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/Factions.jar</systemPath>
+    </dependency>
+    <dependency>
       <groupId>com.sk89q</groupId>
       <artifactId>commandbook</artifactId>
       <version>LATEST</version>

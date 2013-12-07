@@ -130,6 +130,10 @@ public class Sender {
                 EChat.inst().getMessage().getPlayerServer());
         chatFormat = chatFormat.replace("%group%",
                 EChat.inst().getMessage().getPlayerGroup());
+        chatFormat = chatFormat.replace("%faction%",
+                EChat.inst().getMessage().getPlayerFaction());
+        chatFormat = chatFormat.replace("%title%",
+                EChat.inst().getMessage().getPlayerTitle());
 
         // Check if their is a server defined option.
         String tempData = "%%"+chatFormat;
