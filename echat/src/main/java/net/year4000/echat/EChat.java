@@ -12,17 +12,14 @@ import org.bukkit.plugin.messaging.Messenger;
 
 @ComponentInformation(friendlyName = "eChat",
         desc = "Chat formatting with features.")
-public class EChat extends BukkitComponent{
+public class EChat extends BukkitComponent {
 
-	private String component = "[eChat]";
+	private final String component = "[eChat]";
 	private Logger logger = Logger.getLogger(component);
-	private String version =
+	private final String version =
             this.getClass().getPackage().getImplementationVersion();
 	private static EChat instance;
-	private BungeeCord bungeeCord;
 	private Configuration configuration;
-	private Message message;
-	private Sender sender;
 
     /**
      * Get the instance of EChat
@@ -44,10 +41,7 @@ public class EChat extends BukkitComponent{
     public void enable() {
         // Give the other classes an instance of EChat.
         configuration = configure(new Configuration());
-        sender = new Sender();
-        message = new Message();
-        bungeeCord = new BungeeCord();
-        CommandBook.registerEvents(message);
+        CommandBook.registerEvents(new ChatListener());
 
         // Send to other servers when you have BungeeCord enabled.
         if (configuration.bungeecord) {
@@ -55,7 +49,7 @@ public class EChat extends BukkitComponent{
             messenger.registerOutgoingPluginChannel(CommandBook.inst(),
                     "BungeeCord");
             messenger.registerIncomingPluginChannel(CommandBook.inst(),
-                    "BungeeCord", bungeeCord);
+                    "BungeeCord", new BungeeCord());
         }
         logger.log(Level.INFO, component + " version " + version
                 + " has been enabled.");
@@ -74,32 +68,5 @@ public class EChat extends BukkitComponent{
      */
     public Configuration getConfiguration() {
         return this.configuration;
-    }
-
-    /**
-     * Gets the instance of the BungeeCord class.
-     *
-     * @return BungeeCord instance
-     */
-    public BungeeCord getBungeeCord() {
-        return this.bungeeCord;
-    }
-
-    /**
-     * Gets the instance of the Message class.
-     *
-     * @return Message instance.
-     */
-    public Message getMessage() {
-        return this.message;
-    }
-
-    /**
-     * Gets the instance of the Sender class.
-     *
-     * @return Sender instance.
-     */
-    public Sender getSender() {
-        return this.sender;
     }
 }

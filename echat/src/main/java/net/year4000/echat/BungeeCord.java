@@ -12,27 +12,37 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 
 import com.sk89q.commandbook.CommandBook;
 
+import net.year4000.echat.Message;
+
 public class BungeeCord implements PluginMessageListener {
 
     /**
      * Send the needed data to every single server.
      */
-    public void sendChatBungeeCord() {
+    public BungeeCord() {
+    }
+
+    /**
+     * Send the needed data to every single server.
+     *
+     * @param message The message class
+     */
+    public BungeeCord(Message message) {
         try {
             // Send out to eChat.
             ByteArrayOutputStream msgbytes = new ByteArrayOutputStream();
             DataOutputStream msgout = new DataOutputStream(msgbytes);
-            msgout.writeUTF(EChat.inst().getMessage().getPlayerName());
-            msgout.writeUTF(EChat.inst().getMessage().getPlayerDisplayName());
-            msgout.writeUTF(EChat.inst().getMessage().getPlayerServer());
-            msgout.writeUTF(EChat.inst().getMessage().getPlayerWorldName());
-            msgout.writeUTF(EChat.inst().getMessage().getPlayerGroup());
-            msgout.writeUTF(EChat.inst().getMessage().getPlayerMessage());
-            msgout.writeUTF(EChat.inst().getMessage().getPlayerFormat());
-            msgout.writeUTF(EChat.inst().getMessage().getPlayerColor());
-            msgout.writeUTF(EChat.inst().getMessage().getPlayerFaction());
-            msgout.writeUTF(EChat.inst().getMessage().getPlayerTitle());
-            int data = EChat.inst().getMessage().getPlayerMessage().length();
+            msgout.writeUTF(message.getPlayerName());
+            msgout.writeUTF(message.getPlayerDisplayName());
+            msgout.writeUTF(message.getPlayerServer());
+            msgout.writeUTF(message.getPlayerWorldName());
+            msgout.writeUTF(message.getPlayerGroup());
+            msgout.writeUTF(message.getPlayerMessage());
+            msgout.writeUTF(message.getPlayerFormat());
+            msgout.writeUTF(message.getPlayerColor());
+            msgout.writeUTF(message.getPlayerFaction());
+            msgout.writeUTF(message.getPlayerTitle());
+            int data = message.getPlayerMessage().length();
             msgout.writeShort(data);
 
             // Send out to BungeeCord.
@@ -61,33 +71,37 @@ public class BungeeCord implements PluginMessageListener {
     public void onPluginMessageReceived(String channel, Player player,
             byte[] data) {
         // Make sure to get results only from BungeeCord.
-        if (channel.equals("BungeeCord")) {
-            try {
-                DataInputStream in =
-                        new DataInputStream(new ByteArrayInputStream(data));
-                String subchannel = in.readUTF();
-                short len = in.readShort();
-                byte[] msgbytes = new byte[len];
-                in.readFully(msgbytes);
-                DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
-                // Only get data from eChat
-                if (subchannel.equals("eChat")) {
-                    EChat.inst().getMessage().setPlayerName(msgin.readUTF());
-                    EChat.inst().getMessage().setPlayerDisplayName(msgin.readUTF());
-                    EChat.inst().getMessage().setPlayerServer(msgin.readUTF());
-                    EChat.inst().getMessage().setPlayerWorldName(msgin.readUTF());
-                    EChat.inst().getMessage().setPlayerGroup(msgin.readUTF());
-                    EChat.inst().getMessage().setPlayerMessage(msgin.readUTF());
-                    EChat.inst().getMessage().setPlayerFormat(msgin.readUTF());
-                    EChat.inst().getMessage().setPlayerColor(msgin.readUTF());
-                    EChat.inst().getMessage().setPlayerFaction(msgin.readUTF());
-                    EChat.inst().getMessage().setPlayerTitle(msgin.readUTF());
+        if (!channel.equals("BungeeCord")) {
+            return;
+        }
 
-                    EChat.inst().getSender().sendChatMessage();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            DataInputStream in = new DataInputStream(new ByteArrayInputStream(data));
+            String subchannel = in.readUTF();
+            short len = in.readShort();
+            byte[] msgbytes = new byte[len];
+            in.readFully(msgbytes);
+            DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
+            // Only get data from eChat
+            if (subchannel.equals("eChat")) {
+                // Set up the environment.
+                Message message = new Message();
+                message.setPlayerName(msgin.readUTF());
+                message.setPlayerDisplayName(msgin.readUTF());
+                message.setPlayerServer(msgin.readUTF());
+                message.setPlayerWorldName(msgin.readUTF());
+                message.setPlayerGroup(msgin.readUTF());
+                message.setPlayerMessage(msgin.readUTF());
+                message.setPlayerFormat(msgin.readUTF());
+                message.setPlayerColor(msgin.readUTF());
+                message.setPlayerFaction(msgin.readUTF());
+                message.setPlayerTitle(msgin.readUTF());
+
+                // Send the message to its own thread.
+                message.sendMessage(message);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

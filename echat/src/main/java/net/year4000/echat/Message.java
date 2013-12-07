@@ -1,23 +1,13 @@
 package net.year4000.echat;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.Bukkit;
 
-import com.sk89q.wepif.PermissionsResolverManager;
 import com.sk89q.commandbook.CommandBook;
 
-import com.massivecraft.factions.FPlayer;
-import com.massivecraft.factions.FPlayers;
+import net.year4000.echat.Sender;
 
-public class Message implements Listener {
-    // Grabs the needed classes to make this work.
-    private PermissionsResolverManager wepif = PermissionsResolverManager.getInstance();
-
-    // The vars of the plugin.
-    private Player player;
+public class Message {
+    // The vars of the environment.
     private String playerName;
     private String playerDisplayName;
     private String playerWorldName;
@@ -30,43 +20,19 @@ public class Message implements Listener {
     private String playerTitle;
 
     /**
-     * Listens for each chat message and sets up the vars.
+     * Message constructor
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        // Sets the vars to be used later.
-        player = event.getPlayer();
-        playerName = player.getName();
-        playerDisplayName = player.getDisplayName();
-        playerWorldName = player.getWorld().getName();
-        playerServer = player.getServer().getServerName();
-        playerMessage = event.getMessage();
-        playerGroup = wepif.getGroups(player)[0]; 
+    public Message() {
+    }
 
-        // Check if the player can use colors in the chat.
-        if (CommandBook.inst().hasPermission(player, "echat.colors"))
-            setPlayerColor("true");
-        else
-            setPlayerColor("false");
-
-        // Checks where to send the chat.
-        if (EChat.inst().getConfiguration().bungeecord) {
-            playerFormat = EChat.inst().getConfiguration().server;
-            EChat.inst().getBungeeCord().sendChatBungeeCord();
-        }
-
-        // Check if Factions is installed
-        if (EChat.inst().getConfiguration().factions) {
-            FPlayer fplayer = FPlayers.i.get(player);
-            playerFaction = fplayer.getTag();
-            playerTitle = fplayer.getRole().getPrefix();
-        }
-
-        playerFormat = EChat.inst().getConfiguration().chat;
-        EChat.inst().getSender().sendChatMessage();
-    	
-        // Cancels the message as the plugin will send the messages itself.
-        event.setCancelled(true);
+    /**
+     * Send the current message to the sender thread.
+     *
+     * @param message This class
+     */
+    public void sendMessage(Message message) {
+        Bukkit.getScheduler().runTaskAsynchronously(CommandBook.inst(),
+                new Sender(message));
     }
 
     /**

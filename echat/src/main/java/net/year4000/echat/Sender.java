@@ -8,59 +8,52 @@ import org.bukkit.Location;
 
 import com.sk89q.commandbook.CommandBook;
 
-public class Sender {
+import net.year4000.echat.Message;
+
+public class Sender implements Runnable{
+
+    private Message message;
+    private String playerName;
+    private String playerMessage;
+    private String formatMessage;
 
     /**
-     * Sets up the variables before sending it in a thread.
+     * Setup the environment so the message can be sent.
+     *
+     * @param message The class of the current message.
      */
-    public void sendChatMessage() {
-        String playerName = EChat.inst().getMessage().getPlayerName();
-        String playerMessage = EChat.inst().getMessage().getPlayerMessage();
-        String chatFormat = EChat.inst().getMessage().getPlayerFormat();
-        String formatMessage = formatChat(chatFormat);
-        Bukkit.getScheduler().runTaskAsynchronously(CommandBook.inst(),
-                new SendMessage(playerName, playerMessage, formatMessage));
+    public Sender(Message message) {
+        this.message = message;
+        this.playerName = message.getPlayerName();
+        this.playerMessage = message.getPlayerMessage();
+        this.formatMessage = formatChat(message.getPlayerFormat());
     }
 
     /**
-     * Sends the chat in its own thread.
+     * Sends the message to each player on the server and the console.
      */
-    private class SendMessage implements Runnable {
-
-        private String playerName;
-        private String playerMessage;
-        private String formatMessage;
-
-        public SendMessage(String name,String message, String format) {
-            playerName = name;
-            playerMessage = message;
-            formatMessage = format;
-        }
-
-        /**
-         * Sends the message to each player on the server and the console.
-         */
-        @Override
-        public void run() {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                String name = player.getName();
-                // Check if the your trying to mention a player
-                // and notify that player.
-                if (checkName(playerName, name, playerMessage)) {
-                    Location playerLocation = player.getLocation();
-                    player.playSound(playerLocation, Sound.NOTE_PLING, 1, 0);
-                    // Change the mention to current mention
-                    String word = getWord(playerName, name, playerMessage);
-                    String at = ChatColor.AQUA + "@" + name + ChatColor.RESET;
-                    String msg = formatMessage.replaceAll(word, at);
-                    player.sendMessage(msg);
-                } else {
-                    player.sendMessage(formatMessage);
-                }
+    @Override
+    public void run() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            String name = player.getName();
+            // Check if the your trying to mention a player
+            // and notify that player.
+            if (checkName(playerName, name, playerMessage)) {
+                Location playerLocation = player.getLocation();
+                player.playSound(playerLocation, Sound.NOTE_PLING, 1, 0);
+                // Change the mention to current mention
+                String word = getWord(playerName, name, playerMessage);
+                String at = ChatColor.AQUA + "@" + name + ChatColor.RESET;
+                String msg = formatMessage.replaceAll(word, at);
+                player.sendMessage(msg);
+            } else {
+                player.sendMessage(formatMessage);
             }
-            String stripedMessage = ChatColor.stripColor(formatMessage);
-            Bukkit.getConsoleSender().sendMessage(stripedMessage);
         }
+
+        // Sends the non color message to the console.
+        String stripedMessage = ChatColor.stripColor(formatMessage);
+        Bukkit.getConsoleSender().sendMessage(stripedMessage);
     }
 
     /**
@@ -121,24 +114,24 @@ public class Sender {
     private String formatChat(String chatFormat) {
         // Predefined chat options.
         chatFormat = chatFormat.replace("%player%",
-                EChat.inst().getMessage().getPlayerName());
+                this.message.getPlayerName());
         chatFormat = chatFormat.replace("%displayname%",
-                EChat.inst().getMessage().getPlayerDisplayName());
+                this.message.getPlayerDisplayName());
         chatFormat = chatFormat.replace("%world%",
-                EChat.inst().getMessage().getPlayerWorldName());
+                this.message.getPlayerWorldName());
         chatFormat = chatFormat.replace("%server%",
-                EChat.inst().getMessage().getPlayerServer());
+                this.message.getPlayerServer());
         chatFormat = chatFormat.replace("%group%",
-                EChat.inst().getMessage().getPlayerGroup());
+                this.message.getPlayerGroup());
         chatFormat = chatFormat.replace("%faction%",
-                EChat.inst().getMessage().getPlayerFaction());
+                this.message.getPlayerFaction());
         chatFormat = chatFormat.replace("%title%",
-                EChat.inst().getMessage().getPlayerTitle());
+                this.message.getPlayerTitle());
 
         // Check if their is a server defined option.
         String tempData = "%%"+chatFormat;
         for (String word : tempData.split("%")) {
-            String group = EChat.inst().getMessage().getPlayerGroup();
+            String group = this.message.getPlayerGroup();
             String option = EChat.inst().getConfiguration().getOption(group, word);
             if (option != word) {
                 chatFormat = chatFormat.replace("%" + word + "%", option);
@@ -148,12 +141,12 @@ public class Sender {
         chatFormat = replaceColor(chatFormat);
 
         // Checks if the player has the permission to use colors in this chat.
-        if (EChat.inst().getMessage().getPlayerColor().equalsIgnoreCase("true")) {
+        if (this.message.getPlayerColor().equalsIgnoreCase("true")) {
             chatFormat = replaceColor(chatFormat.replace("%message%",
-                    EChat.inst().getMessage().getPlayerMessage()));
+                    this.message.getPlayerMessage()));
         } else {
             chatFormat = chatFormat.replace("%message%",
-                    EChat.inst().getMessage().getPlayerMessage());
+                    this.message.getPlayerMessage());
         }
 
         return chatFormat;
