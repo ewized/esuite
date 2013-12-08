@@ -22,7 +22,8 @@ import org.bukkit.plugin.messaging.Messenger;
         desc = "Login messages that depends on last join.")
 public class EJoinMessage extends BukkitComponent implements Listener {
     private String component = "[eJoinMessage]";
-    private String version = "4";
+    private String version =
+            this.getClass().getPackage().getImplementationVersion();
     private Logger logger = Logger.getLogger(component);
     private LocalConfiguration config;
     private String player;
@@ -42,6 +43,9 @@ public class EJoinMessage extends BukkitComponent implements Listener {
         logger.log(Level.INFO, component + " has been reloaded.");
     }
 
+    /**
+     * Configuration options
+     */
     public static class LocalConfiguration extends ConfigurationBase {
         @Setting("first-join") public String firstJoin = "&a%player% has joined the game for the first time.";
         @Setting("normal-join") public String normalJoin = "&a%player% has joined the game.";
@@ -50,6 +54,11 @@ public class EJoinMessage extends BukkitComponent implements Listener {
         @Setting("break-time") public Long breakTime = (long) 1209600000;
     }
 
+    /**
+     * Listen to the join events.
+     *
+     * @param event PlayerJoinEvent
+     */
     @EventHandler(ignoreCancelled = true)
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
@@ -69,6 +78,11 @@ public class EJoinMessage extends BukkitComponent implements Listener {
         event.setJoinMessage(replaceVars(this.message));
     }
 
+    /**
+     * Listen to the quit events.
+     *
+     * @param event PlayerQuitEvent
+     */
     @EventHandler(ignoreCancelled = true)
     public void onLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
