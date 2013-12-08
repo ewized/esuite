@@ -9,26 +9,31 @@ import com.zachsthings.libcomponents.bukkit.BukkitComponent;
 import com.zachsthings.libcomponents.config.ConfigurationBase;
 import com.zachsthings.libcomponents.config.Setting;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.messaging.Messenger;
 
-@ComponentInformation(friendlyName = "eJoinMessage", desc = "Login messages that depends on last join.")
+@ComponentInformation(friendlyName = "eJoinMessage",
+        desc = "Login messages that depends on last join.")
 public class EJoinMessage extends BukkitComponent implements Listener {
-	
-	private String component = "[eJoinMessage]";
-	private String version = this.getClass().getPackage().getImplementationVersion();
-	private Logger logger = Logger.getLogger(component);
-	private LocalConfiguration config;
-	
+    private String component = "[eJoinMessage]";
+    private String version = "4";
+    private Logger logger = Logger.getLogger(component);
+    private LocalConfiguration config;
+    private String player;
+    private String message;
+    private String world;
+
     public void enable() {
         config = configure(new LocalConfiguration());
         CommandBook.registerEvents(this);
-        logger.log(Level.INFO, component + " version " + version + " has been enabled.");
+        logger.log(Level.INFO, component + " version "
+                + version + " has been enabled.");
     }
 
     public void reload() {
@@ -38,43 +43,50 @@ public class EJoinMessage extends BukkitComponent implements Listener {
     }
 
     public static class LocalConfiguration extends ConfigurationBase {
-    	@Setting("first-join") public String firstJoin = "&a%player% has joined the game for the first time.";
-    	@Setting("normal-join") public String normalJoin = "&a%player% has joined the game.";
-    	@Setting("normal-leave") public String normalLeave = "&a%player% has left the game.";
-    	@Setting("break-join") public String breakJoin = "&a%player% is back from a break.";
-    	@Setting("break-time") public Long breakTime = (long) 1209600000;
+        @Setting("first-join") public String firstJoin = "&a%player% has joined the game for the first time.";
+        @Setting("normal-join") public String normalJoin = "&a%player% has joined the game.";
+        @Setting("normal-leave") public String normalLeave = "&a%player% has left the game.";
+        @Setting("break-join") public String breakJoin = "&a%player% is back from a break.";
+        @Setting("break-time") public Long breakTime = (long) 1209600000;
     }
 
-    @EventHandler()
+    @EventHandler(ignoreCancelled = true)
     public void onJoin(PlayerJoinEvent event) {
-    	Player player = event.getPlayer();
-    	String message = config.normalJoin;
+        Player player = event.getPlayer();
+        this.player = player.getName();
+        this.world = player.getWorld().getName();
+        this.message = config.normalJoin;
+        long lastPlay = player.getLastPlayed();
 
-    	if(player.getLastPlayed() == 0){
-    		message = config.firstJoin;
-    	} else if((player.getLastPlayed()+config.breakTime) < System.currentTimeMillis()){
-    		message = config.breakJoin;
-    	} else{
-    		message = config.normalJoin;
-    	}
-    	event.setJoinMessage(replaceVars(message, player.getName(), player.getWorld().getName()));
+        // Decide what message to display.
+        if (lastPlay == 0) {
+            this.message = config.firstJoin;
+        }
+        else if ((lastPlay + config.breakTime) < System.currentTimeMillis()) {
+            this.message = config.breakJoin;
+        }
+
+        event.setJoinMessage(replaceVars(this.message));
     }
 
-    @EventHandler()
+    @EventHandler(ignoreCancelled = true)
     public void onLeave(PlayerQuitEvent event) {
-    	Player player = event.getPlayer();
-    	String message = config.normalLeave;
-    	event.setQuitMessage(replaceVars(message, player.getName(), player.getWorld().getName()));
+        Player player = event.getPlayer();
+        this.player = player.getName();
+        this.message = config.normalLeave;
+        this.world = player.getWorld().getName();
+
+        event.setQuitMessage(replaceVars(this.message));
     }
 
-    private String replaceVars(String msgFormat, String playerName, String playerWorld) {
-    	msgFormat = msgFormat.replace("%player%", playerName);
-    	msgFormat = msgFormat.replace("%world%", playerWorld);
+    private String replaceVars(String msgFormat) {
+        msgFormat = msgFormat.replace("%player%", this.player);
+        msgFormat = msgFormat.replace("%world%", this.world);
 
-    	for (ChatColor c : ChatColor.values()) {
-    		msgFormat = msgFormat.replaceAll("&" + c.getChar(), c.toString()); 
-    	}
+        for (ChatColor c : ChatColor.values()) {
+            msgFormat = msgFormat.replaceAll("&" + c.getChar(), c.toString()); 
+        }
 
-    	return msgFormat;
+        return msgFormat;
     }
 }
