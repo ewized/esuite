@@ -27,6 +27,7 @@ import com.sk89q.minecraft.util.commands.CommandPermissionsException;
 
 public class ProtectEvents implements Listener {
     private CommandBook cmdbook = CommandBook.inst();
+    private Configuration configuration = EProtect.inst().getConfiguration();
 
     /**
      * If the block is protected, stop the place.
@@ -175,9 +176,9 @@ public class ProtectEvents implements Listener {
         Protected protect = new Protected(block);
 
         if (block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST) {
-            if (event.getLine(0).equalsIgnoreCase("[Protect]")) {
+            if (event.getLine(0).equalsIgnoreCase(configuration.sign)) {
                 if (!protect.isProtected()) {
-                    event.setLine(0, "[Protect]");
+                    event.setLine(0, configuration.sign);
                     if (cmdbook.hasPermission(player, "eprotect.create.other")) {
                         if (event.getLine(1).equals("")) {
                             event.setLine(1, player.getName());

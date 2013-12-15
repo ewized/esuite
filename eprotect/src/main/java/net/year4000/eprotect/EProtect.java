@@ -15,8 +15,28 @@ public class EProtect extends BukkitComponent {
     private final Logger logger = Logger.getLogger(component);
     private final String version =
             this.getClass().getPackage().getImplementationVersion();
+    private Configuration configuration;
+    private static EProtect instance;
+
+    /**
+     * Sets the instance of EProtect.
+     */
+    public EProtect() {
+        super();
+        instance = this;
+    }
+
+    /**
+     * Get the instance of Eprotect.
+     *
+     * @return EProtect instance.
+     */
+    public static EProtect inst() {
+        return instance;
+    }
 
     public void enable() {
+        configuration = configure(new Configuration());
         CommandBook.registerEvents(new ProtectEvents());
         logger.log(Level.INFO, component + " version "
                 + version + " has been enabled.");
@@ -24,6 +44,16 @@ public class EProtect extends BukkitComponent {
 
     public void reload() {
         super.reload();
+        configure(configuration);
         logger.log(Level.INFO, component + " has been reloaded.");
+    }
+
+    /**
+     * Gets the instance of the Configuration class.
+     *
+     * @return Configuration instance
+     */
+    public Configuration getConfiguration() {
+        return this.configuration;
     }
 }

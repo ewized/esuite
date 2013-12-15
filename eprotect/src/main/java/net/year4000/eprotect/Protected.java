@@ -21,6 +21,7 @@ public class Protected {
 
     Set<BlockFace> blockFaces = EnumSet.of(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST);
     Set<BlockFace> blockUpDown = EnumSet.of(BlockFace.UP, BlockFace.DOWN);
+    private Configuration configuration = EProtect.inst().getConfiguration();
     private boolean protect;
     private String type;
     private List<String> members = new ArrayList<String>();
@@ -172,7 +173,7 @@ public class Protected {
             Sign sign = (Sign) block.getState();
             String[] lines = sign.getLines();
 
-            if (lines[0].equalsIgnoreCase("[Protect]")) {
+            if (lines[0].equalsIgnoreCase(configuration.sign)) {
                 for (int i = 1; i < lines.length; i++) {
                     this.members.add(lines[i]);
                 }
