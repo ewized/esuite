@@ -12,7 +12,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 import org.bukkit.material.Attachable;
 
 import com.sk89q.commandbook.CommandBook;
@@ -22,10 +22,36 @@ public class Protected {
     Set<BlockFace> blockFaces = EnumSet.of(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST);
     Set<BlockFace> blockUpDown = EnumSet.of(BlockFace.UP, BlockFace.DOWN);
     private boolean protect;
+    private String type;
     private List<String> members = new ArrayList<String>();
     private int x;
     private int y;
     private int z;
+
+   /**
+     * Create a new instance if the entity is protected.
+     *
+     * @param entity The entity to check against.
+     */
+    Protected(Entity entity) {
+        this.type = "entity";
+        Block block = entity.getLocation().getBlock();
+
+        checkChunk(block);
+
+        // Special blocks
+        switch (block.getType()) {
+            case WALL_SIGN:
+                checkSign(block);
+                break;
+            case CHEST:
+                checkChest(block);
+                break;
+            default:
+                checkBlock(block);
+                break;
+        }
+    }
 
     /**
      * Create a new instance if the block is protected.
@@ -33,6 +59,7 @@ public class Protected {
      * @param block The block to check against.
      */
     Protected(Block block) {
+        this.type = "block";
         checkChunk(block);
 
         // Special blocks
@@ -99,7 +126,8 @@ public class Protected {
         switch (type) {
             case 0: // Normal notice message.
                 message = ChatColor.GOLD + "NOTICE: " + ChatColor.YELLOW
-                        + "This block is protected by " + getOwner() + ".";
+                        + "This " + this.type
+                        + " is protected by " + getOwner() + ".";
                 break;
             case 1: // Bypass message.
                 message = ChatColor.RED + "You are bypassing "
@@ -107,14 +135,16 @@ public class Protected {
                 break;
             case 2: // Info message
                 if (isProtected()) {
-                    message = ChatColor.GRAY + "This block is protected by: "
+                    message = ChatColor.GRAY + "This " + this.type
+                            + " is protected by: "
                             + getOwner()
                             + " (x:" + this.x + " "
                             + "y:" + this.y + " "
                             + "z:" + this.z + ")";
                 }
                 else {
-                    message = ChatColor.GRAY + "This block is protected by: no one";
+                    message = ChatColor.GRAY + "This " + this.type
+                            + " is protected by: no one";
                 }
                 break;
             default:

@@ -4,16 +4,23 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Monster;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.EnderDragonPart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.hanging.HangingBreakEvent;
-import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 import com.sk89q.commandbook.CommandBook;
 import com.sk89q.minecraft.util.commands.CommandPermissionsException;
@@ -22,19 +29,94 @@ public class ProtectEvents implements Listener {
     private CommandBook cmdbook = CommandBook.inst();
 
     /**
+     * If the block is protected, stop the place.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onBlockPlace(BlockPlaceEvent event) {
+        Player player = event.getPlayer();
+        Block block = event.getBlock();
+        Protected protect = new Protected(block);
+
+        boolean results = checkPlayer(protect, player);
+
+        event.setCancelled(results);
+    }
+
+    /**
+     * If the block is protected, stop the break.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onBlockBreak(BlockBreakEvent event) {
+        Player player = event.getPlayer();
+        Block block = event.getBlock();
+        Protected protect = new Protected(block);
+
+        boolean results = checkPlayer(protect, player);
+
+        event.setCancelled(results);
+    }
+
+    /**
+     * If the entity is protected, stop the damage.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        Entity entity = event.getEntity();
+        Entity damager = event.getDamager();
+        Protected protect = new Protected(entity);
+        boolean results = false;
+        boolean ignore = entity instanceof Monster
+                || entity instanceof EnderDragon
+                || entity instanceof EnderDragonPart;
+
+        // Ignore specific entities with protection.
+        if (ignore) {
+            return;
+        }
+
+        // Check the player if the entity is a player.
+        if (damager instanceof Player) {
+            Player player = (Player) damager;
+            boolean sneaking = player.isSneaking();
+            results = checkPlayerAndSend(protect, player, sneaking);
+        }
+
+        event.setCancelled(results);
+    }
+
+    /**
+     * If the entity is protected, block the interact.
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
+        Player player = event.getPlayer();
+        Entity entity = event.getRightClicked();
+        Protected protect = new Protected(entity);
+
+        boolean sneaking = player.isSneaking();
+        boolean results = checkPlayerAndSend(protect, player, sneaking);
+
+        event.setCancelled(results);
+    }
+
+    /**
      * If the entity is protected, block it from breaking.
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onHanging(HangingBreakEvent event) {
-        Block block = event.getEntity().getLocation().getBlock();
-        RemoveCause cause = event.getCause();
-        Protected protect = new Protected(block);
+    public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
+        Entity entity = event.getEntity();
+        Entity remover = event.getRemover();
+        Protected protect = new Protected(entity);
+        boolean results = true;
 
-        if (cause == RemoveCause.ENTITY) {
-            if (protect.isProtected()) {
-                event.setCancelled(true);
-            }
+        // Check the player if the entity is a player.
+        if (remover instanceof Player) {
+            Player player = (Player) remover;
+            boolean sneaking = player.isSneaking();
+            results = checkPlayerAndSend(protect, player, sneaking);
         }
+
+        event.setCancelled(results);
 
     }
 
@@ -46,28 +128,13 @@ public class ProtectEvents implements Listener {
         Block block = event.getClickedBlock();
         Player player = event.getPlayer();
         Action action = event.getAction();
+        Action right = Action.RIGHT_CLICK_BLOCK;
         Protected protect = new Protected(block);
-        boolean sneeking = player.isSneaking() && action == Action.RIGHT_CLICK_BLOCK;
 
-        if (protect.isProtected()) {
-            if (cmdbook.hasPermission(player, "eprotect.override")) {
-                if (sneeking)
-                    player.sendMessage(protect.getMessage(2));
-                else
-                    player.sendMessage(protect.getMessage(1));
-                event.setCancelled(false);
-            }
-            else if (!protect.isMember(player.getName())) {
-                if (sneeking)
-                    player.sendMessage(protect.getMessage(2));
-                else
-                    player.sendMessage(protect.getMessage(0));
-                event.setCancelled(true);
-            }
-        }
-        else if (sneeking) {
-            player.sendMessage(protect.getMessage(2));
-        }
+        boolean sneaking = player.isSneaking() && action == right;
+        boolean results = checkPlayerAndSend(protect, player, sneaking);
+
+        event.setCancelled(results);
     }
 
     /**
@@ -110,16 +177,13 @@ public class ProtectEvents implements Listener {
         if (block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST) {
             if (event.getLine(0).equalsIgnoreCase("[Protect]")) {
                 if (!protect.isProtected()) {
-                    try {
-                        CommandBook.inst().checkPermission(player, "eprotect.create.other");
-                        event.setLine(0, "[Protect]");
-
+                    event.setLine(0, "[Protect]");
+                    if (cmdbook.hasPermission(player, "eprotect.create.other")) {
                         if (event.getLine(1).equals("")) {
                             event.setLine(1, player.getName());
                         }
                     }
-                    catch (CommandPermissionsException e) {
-                        event.setLine(0, "[Protect]");
+                    else {
                         event.setLine(1, player.getName());
                     }
                 }
@@ -130,4 +194,58 @@ public class ProtectEvents implements Listener {
             }
         }
     }
+
+    /**
+     *  Sends the correct message to the player.
+     *
+     * @param protect The instance of protected.
+     * @param player The player to send the messages.
+     * @return true If we need to cancel the event.
+     */
+    private boolean checkPlayerAndSend(Protected protect, Player player, boolean sneaking) {
+        boolean results = false;
+        if (protect.isProtected()) {
+            if (cmdbook.hasPermission(player, "eprotect.override")) {
+                if (sneaking)
+                    player.sendMessage(protect.getMessage(2));
+                else if (!protect.isMember(player.getName()))
+                    player.sendMessage(protect.getMessage(1));
+            }
+            else if (!protect.isMember(player.getName())) {
+                if (sneaking)
+                    player.sendMessage(protect.getMessage(2));
+                else
+                    player.sendMessage(protect.getMessage(0));
+                results = true;
+            }
+            else if (sneaking) {
+                player.sendMessage(protect.getMessage(2));
+            }
+        }
+        else if (sneaking) {
+            player.sendMessage(protect.getMessage(2));
+        }
+        return results;
+    }
+
+    /**
+     *  Check if we should cancel the event for the player.
+     *
+     * @param protect The instance of protected.
+     * @param player The player to send the messages.
+     * @return true If we need to cancel the event.
+     */
+    private boolean checkPlayer(Protected protect, Player player) {
+        boolean results = false;
+        if (protect.isProtected()) {
+            if (cmdbook.hasPermission(player, "eprotect.override")) {
+                results = false;
+            }
+            else if (!protect.isMember(player.getName())) {
+                results = true;
+            }
+        }
+        return results;
+    }
+
 }
