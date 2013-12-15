@@ -19,68 +19,97 @@ import com.sk89q.commandbook.CommandBook;
 import com.sk89q.minecraft.util.commands.CommandPermissionsException;
 
 public class ProtectEvents implements Listener {
-    private Protected protect = new Protected();
+    private CommandBook cmdbook = CommandBook.inst();
 
+    /**
+     * If the entity is protected, block it from breaking.
+     */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onHanging(HangingBreakEvent event) {
         Block block = event.getEntity().getLocation().getBlock();
         RemoveCause cause = event.getCause();
+        Protected protect = new Protected(block);
 
         if (cause == RemoveCause.ENTITY) {
-            if (protect.isProtected(block, null)) {
+            if (protect.isProtected()) {
                 event.setCancelled(true);
             }
         }
 
     }
 
+    /**
+     * If the block is being interacted by other than the members, block it.
+     */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
         Player player = event.getPlayer();
         Action action = event.getAction();
+        Protected protect = new Protected(block);
+        boolean sneeking = player.isSneaking() && action == Action.RIGHT_CLICK_BLOCK;
 
-        if (protect.isProtected(block, player)) {
-            event.setCancelled(true);
+        if (protect.isProtected()) {
+            if (cmdbook.hasPermission(player, "eprotect.override")) {
+                if (sneeking)
+                    player.sendMessage(protect.getMessage(2));
+                else
+                    player.sendMessage(protect.getMessage(1));
+                event.setCancelled(false);
+            }
+            else if (!protect.isMember(player.getName())) {
+                if (sneeking)
+                    player.sendMessage(protect.getMessage(2));
+                else
+                    player.sendMessage(protect.getMessage(0));
+                event.setCancelled(true);
+            }
         }
-
-        if (player.isSneaking() && action == Action.RIGHT_CLICK_BLOCK) {
-            player.sendMessage(ChatColor.GRAY + "This block is protected by: " + protect.getSign(block));
+        else if (sneeking) {
+            player.sendMessage(protect.getMessage(2));
         }
-
-        protect.result = false;
-        protect.message = "no one";
     }
 
+    /**
+     * If any of the blocks are protected, block the explosion.
+     */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent event) {
         for (Block block : event.blockList()) {
-            if (protect.isProtected(block, null)) {
+            Protected protect = new Protected(block);
+
+            if (protect.isProtected()) {
                 event.setCancelled(true);
-                protect.result = false;
                 break;
             }
         }
     }
 
+    /**
+     * If the block is protected, block it from burring.
+     */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBurn(BlockBurnEvent event) {
         Block block = event.getBlock();
+        Protected protect = new Protected(block);
 
-        if (protect.isProtected(block, null)) {
+        if (protect.isProtected()) {
             event.setCancelled(true);
-            protect.result = false;
         }
     }
 
+    /**
+     * Gives users access to place protect signs.
+     */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onSignChange(SignChangeEvent event) {
         Block block = event.getBlock();
         Player player = event.getPlayer();
+        Protected protect = new Protected(block);
 
         if (block.getType() == Material.WALL_SIGN || block.getType() == Material.SIGN_POST) {
             if (event.getLine(0).equalsIgnoreCase("[Protect]")) {
-                if (!protect.isProtected(block, null)) {
+                if (!protect.isProtected()) {
                     try {
                         CommandBook.inst().checkPermission(player, "eprotect.create.other");
                         event.setLine(0, "[Protect]");

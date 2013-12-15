@@ -2,6 +2,8 @@ package net.year4000.eprotect;
 
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -19,72 +21,148 @@ public class Protected {
 
     Set<BlockFace> blockFaces = EnumSet.of(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST);
     Set<BlockFace> blockUpDown = EnumSet.of(BlockFace.UP, BlockFace.DOWN);
-    boolean result = false;
-    String message = "no one";
+    private boolean protect;
+    private List<String> members = new ArrayList<String>();
+    private int x;
+    private int y;
+    private int z;
 
-    public boolean isProtected(Block block, Player player) {
-        checkChunk(block, player);
+    /**
+     * Create a new instance if the block is protected.
+     *
+     * @param block The block to check against.
+     */
+    Protected(Block block) {
+        checkChunk(block);
 
+        // Special blocks
         switch (block.getType()) {
             case WALL_SIGN:
-                checkSign(block, player);
-                return result;
+                checkSign(block);
+                break;
             case CHEST:
-                checkChest(block, player);
-                return result;
+                checkChest(block);
+                break;
             default:
-                checkBlock(block, player);
+                checkBlock(block);
+                break;
         }
-
-        return result;
     }
 
-    public String getSign(Block block) {
+    /**
+     * Get the owner of the protection.
+     *
+     * @return The owner of the protection.
+     */
+    public String getOwner() {
+        String results;
+        try {
+            results = this.members.get(0);
+        }
+        catch (Exception e) {
+            results = "no one";
+        }
+        return results;
+    }
+
+    /**
+     * Checks if the player's name is on the sign.
+     *
+     * @return true if the name is a member for the sign.
+     */
+    public boolean isMember(String player) {
+        for (int i = 0; i < this.members.size(); i++) {
+            if (this.members.get(i).equalsIgnoreCase(player)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the block is protected.
+     *
+     * @return true When the block is protected by some player.
+     */
+    public boolean isProtected() {
+        return this.protect;
+    }
+
+    /**
+     * Get the message to display to the player.
+     *
+     * @param type The type of message to display.
+     * @return The correct message to display.
+     */
+    public String getMessage(int type) {
+        String message;
+        switch (type) {
+            case 0: // Normal notice message.
+                message = ChatColor.GOLD + "NOTICE: " + ChatColor.YELLOW
+                        + "This block is protected by " + getOwner() + ".";
+                break;
+            case 1: // Bypass message.
+                message = ChatColor.RED + "You are bypassing "
+                        + getOwner() + "'s protection.";
+                break;
+            case 2: // Info message
+                if (isProtected()) {
+                    message = ChatColor.GRAY + "This block is protected by: "
+                            + getOwner()
+                            + " (x:" + this.x + " "
+                            + "y:" + this.y + " "
+                            + "z:" + this.z + ")";
+                }
+                else {
+                    message = ChatColor.GRAY + "This block is protected by: no one";
+                }
+                break;
+            default:
+                message = "";
+                break;
+        }
         return message;
     }
 
-    private void checkSign(Block block, Player player) {
-        Sign sign = (Sign) block.getState();
-        String[] lines = sign.getLines();
-
-        if (lines[0].equalsIgnoreCase("[Protect]")) {
-            if (player != null) {
-                boolean override = false;
-
-                try {
-                    CommandBook.inst().checkPermission(player, "eprotect.override");
-                    override = true;
-                } catch (Exception e) {}
-
-                Boolean locked = true;
-
-                for (String line : lines) {
-                    if (line.equalsIgnoreCase(player.getName())) {
-                        locked = false;
-                        break;
-                    }
-                }
-
-                if (locked) {
-                    if (override) {
-                        result = false;
-                        player.sendMessage(ChatColor.RED + "You are bypassing " + lines[1] + "'s protection.");
-                    }
-                    else {
-                        result = true;
-                        player.sendMessage(ChatColor.GOLD + "NOTICE: " + ChatColor.YELLOW + "This block is protected by " +	lines[1] + ".");
-                    }
-                }
-            }
-            else {
-                result = true;
-            }
-
-            message = lines[1] + " (x:" + sign.getX() + " y:" + sign.getY() + " z:" + sign.getZ() + ")";
+    /**
+     * Check if the sign is a protect sign.
+     *
+     * @param block The block to check against.
+     * @return true When a valid sign has been found.
+     */
+    private boolean checkSign(Block block) {
+        boolean results = false;
+        // If the block is already protected don't check again.
+        if (isProtected()) {
+            return isProtected();
         }
+
+        // Check if the block is a sign.
+        if (block.getState() instanceof Sign) {
+            Sign sign = (Sign) block.getState();
+            String[] lines = sign.getLines();
+
+            if (lines[0].equalsIgnoreCase("[Protect]")) {
+                for (int i = 1; i < lines.length; i++) {
+                    this.members.add(lines[i]);
+                }
+                // Get the sign location
+                this.x = block.getX();
+                this.y = block.getY();
+                this.z = block.getZ();
+                results = true;
+            }
+        }
+        this.protect = results;
+        return results;
     }
 
-    private void checkBlock(Block block, Player player) {
+    /**
+     * Check if the block has a protect sign attached to it.
+     *
+     * @param block The block to check against.
+     */
+    private void checkBlock(Block block) {
         for (BlockFace blockface : blockFaces) {
             Block face = block.getRelative(blockface);
 
@@ -93,33 +171,45 @@ public class Protected {
                 Attachable direction = (Attachable) sign.getData();
                 BlockFace blockfacesign = direction.getAttachedFace().getOppositeFace();
 
-                if (blockface.equals(blockfacesign)) {
-                    checkSign(face, player);
+                if (blockface == blockfacesign) {
+                    checkSign(face);
                 }
             }
         }
     }
 
-    private void checkChest(Block block, Player player) {
+    /**
+     * Check if the chest is protected.
+     *
+     * Also check if the chest is a multi block.
+     *
+     * @param block The block to check against.
+     */
+    private void checkChest(Block block) {
         for (BlockFace blockface : blockFaces) {
             Block adjacent = block.getRelative(blockface);
 
             if (adjacent.getState() instanceof Chest) {
-                checkBlock(adjacent, player);
+                checkBlock(adjacent);
             }
-            else if (adjacent.getType().equals(Material.WALL_SIGN)) {
+            else if (adjacent.getType() == Material.WALL_SIGN) {
                 Sign sign = (Sign) adjacent.getState();
                 Attachable direction = (Attachable) sign.getData();
                 BlockFace blockfacesign = direction.getAttachedFace().getOppositeFace();
 
-                if (blockface.equals(blockfacesign)) {
-                    checkSign(adjacent, player);
+                if (blockface == blockfacesign) {
+                    checkSign(adjacent);
                 }
             }
         }
     }
 
-    public void checkChunk(Block block, Player player) {
+    /**
+     * Check if the chunk is protected.
+     *
+     * @param block The block to check against.
+     */
+    private void checkChunk(Block block) {
         Chunk chunk = block.getChunk();
         int blockX = chunk.getX();
         int blockZ = chunk.getZ();
@@ -137,7 +227,8 @@ public class Protected {
                     Block currentBlock = chunk.getBlock(b, a, c);
 
                     if (currentBlock.getType() == Material.SIGN_POST) {
-                        checkSign(currentBlock, player);
+                        if (checkSign(currentBlock))
+                            break;
                     }
                 }
             }
