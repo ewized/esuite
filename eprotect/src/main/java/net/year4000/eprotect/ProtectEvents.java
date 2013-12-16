@@ -32,7 +32,7 @@ public class ProtectEvents implements Listener {
     /**
      * If the block is protected, stop the place.
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
@@ -46,7 +46,7 @@ public class ProtectEvents implements Listener {
     /**
      * If the block is protected, stop the break.
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
@@ -60,7 +60,7 @@ public class ProtectEvents implements Listener {
     /**
      * If the entity is protected, stop the damage.
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         Entity entity = event.getEntity();
         Entity damager = event.getDamager();
@@ -88,7 +88,7 @@ public class ProtectEvents implements Listener {
     /**
      * If the entity is protected, block the interact.
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
         Entity entity = event.getRightClicked();
@@ -103,7 +103,7 @@ public class ProtectEvents implements Listener {
     /**
      * If the entity is protected, block it from breaking.
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
         Entity entity = event.getEntity();
         Entity remover = event.getRemover();
@@ -124,7 +124,7 @@ public class ProtectEvents implements Listener {
     /**
      * If the block is being interacted by other than the members, block it.
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
         Block block = event.getClickedBlock();
         Player player = event.getPlayer();
@@ -141,7 +141,7 @@ public class ProtectEvents implements Listener {
     /**
      * If any of the blocks are protected, block the explosion.
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent event) {
         for (Block block : event.blockList()) {
             Protected protect = new Protected(block);
@@ -156,7 +156,7 @@ public class ProtectEvents implements Listener {
     /**
      * If the block is protected, block it from burring.
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onBlockBurn(BlockBurnEvent event) {
         Block block = event.getBlock();
         Protected protect = new Protected(block);
@@ -169,7 +169,7 @@ public class ProtectEvents implements Listener {
     /**
      * Gives users access to place protect signs.
      */
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onSignChange(SignChangeEvent event) {
         Block block = event.getBlock();
         Player player = event.getPlayer();
