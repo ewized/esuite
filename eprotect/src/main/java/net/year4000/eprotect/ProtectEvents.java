@@ -38,6 +38,11 @@ public class ProtectEvents implements Listener {
         Block block = event.getBlock();
         Protected protect = new Protected(block);
 
+        // Check if the area is protected.
+        if (!protect.isProtected()) {
+            return;
+        }
+
         boolean results = checkPlayer(protect, player);
 
         event.setCancelled(results);
@@ -52,6 +57,11 @@ public class ProtectEvents implements Listener {
         Block block = event.getBlock();
         Protected protect = new Protected(block);
 
+        // Check if the area is protected.
+        if (!protect.isProtected()) {
+            return;
+        }
+        
         boolean results = checkPlayer(protect, player);
 
         event.setCancelled(results);
@@ -65,7 +75,7 @@ public class ProtectEvents implements Listener {
         Entity entity = event.getEntity();
         Entity damager = event.getDamager();
         Protected protect = new Protected(entity);
-        boolean results = false;
+        boolean results = true;
         boolean ignore = entity instanceof Monster
                 || entity instanceof EnderDragon
                 || entity instanceof EnderDragonPart;
