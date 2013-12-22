@@ -84,6 +84,16 @@ public class EFriends extends BukkitComponent {
         return connection;
     }
 
+    /**
+     * Get the class for group.
+     *
+     * @param group The name of the group.
+     * @return The instance of the group.
+     */
+    public Group getGroup(String group) {
+        return new Group(group);
+    }
+
     public class Configuration extends ConfigurationBase {
         @Setting("sql-url") public String sqlURL = "jdbc:mysql://localhost:3306/database";
         @Setting("sql-user") public String sqlUser = "root";
