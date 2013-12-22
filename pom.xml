@@ -22,6 +22,7 @@
     <module>eprotect</module>
     <module>erandomnamecolor</module>
     <module>erespawn</module>
+    <module>efriends</module>
   </modules>
 
   <build>
