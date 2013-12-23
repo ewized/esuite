@@ -5,9 +5,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.EnderDragonPart;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -76,12 +75,9 @@ public class ProtectEvents implements Listener {
         Entity damager = event.getDamager();
         Protected protect = new Protected(entity);
         boolean results = true;
-        boolean ignore = entity instanceof Monster
-                || entity instanceof EnderDragon
-                || entity instanceof EnderDragonPart;
 
-        // Ignore specific entities with protection.
-        if (ignore) {
+        // Should we ignore checking.
+        if (!protect.isProtected()) {
             return;
         }
 
@@ -90,6 +86,25 @@ public class ProtectEvents implements Listener {
             Player player = (Player) damager;
             boolean sneaking = player.isSneaking();
             results = checkPlayerAndSend(protect, player, sneaking);
+        }
+
+        // Check projectile.
+        if (damager instanceof Projectile) {
+            LivingEntity shooter = ((Projectile)damager).getShooter();
+            if (shooter != null && shooter instanceof Player) {
+                Player player = (Player) shooter;
+                boolean sneaking = player.isSneaking();
+                results = checkPlayerAndSend(protect, player, sneaking);
+            }
+
+            if (entity instanceof LivingEntity)
+                results = false;
+        }
+
+        // Check if a living entity other then a player is the damager.
+        if (damager instanceof LivingEntity && entity instanceof LivingEntity) {
+            if (!results)
+                return;
         }
 
         event.setCancelled(results);
