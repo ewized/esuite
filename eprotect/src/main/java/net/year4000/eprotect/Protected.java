@@ -17,6 +17,8 @@ import org.bukkit.material.Attachable;
 
 import com.sk89q.commandbook.CommandBook;
 
+import net.year4000.efriends.*;
+
 public class Protected {
 
     Set<BlockFace> blockFaces = EnumSet.of(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST);
@@ -38,8 +40,6 @@ public class Protected {
         this.type = "entity";
         Block block = entity.getLocation().getBlock();
 
-        checkChunk(block);
-
         // Special blocks
         switch (block.getType()) {
             case WALL_SIGN:
@@ -52,6 +52,8 @@ public class Protected {
                 checkBlock(block);
                 break;
         }
+
+        checkChunk(block);
     }
 
     /**
@@ -61,7 +63,6 @@ public class Protected {
      */
     Protected(Block block) {
         this.type = "block";
-        checkChunk(block);
 
         // Special blocks
         switch (block.getType()) {
@@ -75,6 +76,8 @@ public class Protected {
                 checkBlock(block);
                 break;
         }
+
+        checkChunk(block);
     }
 
     /**
@@ -85,7 +88,7 @@ public class Protected {
     public String getOwner() {
         String results;
         try {
-            results = this.members.get(0);
+            results = members.get(0);
         }
         catch (Exception e) {
             results = "no one";
@@ -99,8 +102,11 @@ public class Protected {
      * @return true if the name is a member for the sign.
      */
     public boolean isMember(String player) {
-        for (int i = 0; i < this.members.size(); i++) {
-            if (this.members.get(i).equalsIgnoreCase(player)) {
+        for (int i = 0; i < members.size(); i++) {
+            if (members.get(i).equalsIgnoreCase("everyone")) {
+                return true;
+            }
+            if (members.get(i).equalsIgnoreCase(player)) {
                 return true;
             }
         }
@@ -175,16 +181,24 @@ public class Protected {
 
             if (lines[0].equalsIgnoreCase(configuration.sign)) {
                 for (int i = 1; i < lines.length; i++) {
-                    this.members.add(lines[i]);
+                    if (lines[i].startsWith("#")) {
+                        String list = lines[i].substring(1);
+                        EFriends.Group group = EFriends.inst().getGroup(list);
+                        List<String> players = group.getMembers();
+                        for (int j = 0; j < players.size(); j++)
+                            members.add(players.get(j));
+                    }
+                    else
+                        members.add(lines[i]);
                 }
                 // Get the sign location
-                this.x = block.getX();
-                this.y = block.getY();
-                this.z = block.getZ();
+                x = block.getX();
+                y = block.getY();
+                z = block.getZ();
                 results = true;
             }
         }
-        this.protect = results;
+        protect = results;
         return results;
     }
 

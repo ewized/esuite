@@ -38,6 +38,10 @@
   </build>
   
   <repositories>
+    <repository>
+        <id>year4000-repo</id>
+        <url>http://ci.year4000.net/plugin/repository/everything/</url>
+    </repository>
 	<repository>
 	    <id>bukkit-repo</id>	
 	    <url>http://repo.bukkit.org/content/groups/public/</url>
@@ -49,6 +53,11 @@
   </repositories>
   
   <dependencies>
+    <dependency>
+      <groupId>net.year4000</groupId>
+      <artifactId>efriends</artifactId>
+      <version>LATEST</version>
+    </dependency>
     <dependency>
       <groupId>com.sk89q</groupId>
       <artifactId>commandbook</artifactId>

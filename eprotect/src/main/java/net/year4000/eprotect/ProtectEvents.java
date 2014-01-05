@@ -1,5 +1,6 @@
 package net.year4000.eprotect;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -36,13 +37,14 @@ public class ProtectEvents implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         Protected protect = new Protected(block);
+        boolean sneaking = player.isSneaking();
 
         // Check if the area is protected.
         if (!protect.isProtected()) {
             return;
         }
 
-        boolean results = checkPlayer(protect, player);
+        boolean results = checkPlayerAndSend(protect, player, sneaking);
 
         event.setCancelled(results);
     }
@@ -55,13 +57,14 @@ public class ProtectEvents implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         Protected protect = new Protected(block);
+        boolean sneaking = player.isSneaking();
 
         // Check if the area is protected.
         if (!protect.isProtected()) {
             return;
         }
         
-        boolean results = checkPlayer(protect, player);
+        boolean results = checkPlayerAndSend(protect, player, sneaking);
 
         event.setCancelled(results);
     }
@@ -85,6 +88,25 @@ public class ProtectEvents implements Listener {
         if (damager instanceof Player) {
             Player player = (Player) damager;
             boolean sneaking = player.isSneaking();
+
+            // Temp fix to add flags.
+            if (entity instanceof Player && protect.isMember("!pvp")) {
+                if (sneaking) {
+                    player.sendMessage(protect.getMessage(2));
+                }
+                return;
+            }
+
+            // Temp fix to add flags.
+            if (!(entity instanceof Player)) {
+                if (entity instanceof LivingEntity && protect.isMember("!pve")) {
+                    if (sneaking) {
+                        player.sendMessage(protect.getMessage(2));
+                    }
+                    return;
+                }
+            }
+
             results = checkPlayerAndSend(protect, player, sneaking);
         }
 
@@ -118,8 +140,18 @@ public class ProtectEvents implements Listener {
         Player player = event.getPlayer();
         Entity entity = event.getRightClicked();
         Protected protect = new Protected(entity);
-
         boolean sneaking = player.isSneaking();
+
+        // Quick fix to add flags.
+        if (entity instanceof LivingEntity) {
+            if (protect.isMember("!use-entity") || protect.isMember("!use")) {
+                if (sneaking) {
+                    player.sendMessage(protect.getMessage(2));
+                }
+                return;
+            }
+        }
+
         boolean results = checkPlayerAndSend(protect, player, sneaking);
 
         event.setCancelled(results);
@@ -156,8 +188,16 @@ public class ProtectEvents implements Listener {
         Action action = event.getAction();
         Action right = Action.RIGHT_CLICK_BLOCK;
         Protected protect = new Protected(block);
-
         boolean sneaking = player.isSneaking() && action == right;
+
+        // Quick fix to add flags.
+        if (protect.isMember("!use-block") || protect.isMember("!use")) {
+            if (sneaking) {
+                player.sendMessage(protect.getMessage(2));
+            }    
+            return;
+        }
+
         boolean results = checkPlayerAndSend(protect, player, sneaking);
 
         event.setCancelled(results);
