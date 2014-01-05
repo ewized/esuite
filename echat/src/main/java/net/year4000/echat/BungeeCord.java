@@ -18,6 +18,12 @@ public class BungeeCord implements PluginMessageListener {
 
     /**
      * Send the needed data to every single server.
+     */
+    public BungeeCord() {
+    }
+
+    /**
+     * Send the needed data to every single server.
      *
      * @param message The message class
      */
