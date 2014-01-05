@@ -83,16 +83,17 @@ public class BungeeCord implements PluginMessageListener {
             byte[] msgbytes = new byte[len];
             in.readFully(msgbytes);
             DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
-            long sentTime = msgin.readLong(); // Get sent time
-
-            // Only run if message was sent with in 1 second
-            long currentTime = System.currentTimeMillis();
-            if (sentTime + 1000 < currentTime) {
-                return;
-            }
 
             // Only get data from eChat
             if (subchannel.equals("eChat")) {
+                long sentTime = msgin.readLong(); // Get sent time
+
+                // Only run if message was sent with in 1 second
+                long currentTime = System.currentTimeMillis();
+                if (sentTime + 1000 < currentTime) {
+                    return;
+                }
+
                 // Set up the environment.
                 Message message = new Message();
                 message.setPlayerName(msgin.readUTF());
