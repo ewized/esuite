@@ -18,12 +18,6 @@ public class BungeeCord implements PluginMessageListener {
 
     /**
      * Send the needed data to every single server.
-     */
-    public BungeeCord() {
-    }
-
-    /**
-     * Send the needed data to every single server.
      *
      * @param message The message class
      */
@@ -87,10 +81,10 @@ public class BungeeCord implements PluginMessageListener {
             // Only get data from eChat
             if (subchannel.equals("eChat")) {
                 long sentTime = msgin.readLong(); // Get sent time
-
-                // Only run if message was sent with in 1 second
                 long currentTime = System.currentTimeMillis();
-                if (sentTime + 1000 < currentTime) {
+
+                // TODO: Better way of tracking data size and time length
+                if (sentTime + 100 < currentTime) {
                     return;
                 }
 

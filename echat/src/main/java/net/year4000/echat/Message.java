@@ -20,12 +20,6 @@ public class Message {
     private String playerTitle;
 
     /**
-     * Message constructor
-     */
-    public Message() {
-    }
-
-    /**
      * Send the current message to the sender thread.
      *
      * @param message This class
