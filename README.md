@@ -20,15 +20,8 @@ The components in eSuite uses [Maven]. This will download all of the dependencie
   - The components are built against `Java 7`.
   - To compile the components use `mvn install`.
 
-License
-------
-eSuite and the components in this collection of mods is licensed under the [GNU General Public License][license], version 3.
-
-eSuite Copyright &copy; 2013 Joshua Rodriguez [http://www.ewized.com/][ewized]
 
 [logo]: http://dev.bukkit.org/media/images/61/179/eSuite.png
-[license]: https://github.com/Year4000/esuite/blob/master/LICENSE.md
 [commandbook]: https://github.com/sk89q/commandbook
 [year4000]: http://www.year4000.net/
-[ewized]: http://www.ewized.com/
 [maven]: http://maven.apache.org
